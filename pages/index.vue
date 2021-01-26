@@ -1,27 +1,14 @@
 <template>
-  <v-layout
-    column
-    justify-center
-    align-center
-  >
-    <v-flex
-      xs12
-      sm8
-      md6
-    >
-      <h1>Welcome T My Blog</h1>
-    </v-flex>
+  <v-layout row>
+
+<h1>Welcmoe Home</h1>
+
+
   </v-layout>
 </template>
 
 <script>
-  import Logo from '~/components/Logo.vue'
-  import VuetifyLogo from '~/components/VuetifyLogo.vue'
+export default {
 
-  export default {
-    components: {
-      Logo,
-      VuetifyLogo
-    }
-  }
+};
 </script>
