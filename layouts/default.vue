@@ -60,7 +60,7 @@ export default {
       miniVariant: false,
       right: true,
       rightDrawer: false,
-      title: "به سایت کوچک من خوش آمدید",
+      title: "خوش آمدید",
 
        menus: [
         {
@@ -70,38 +70,38 @@ export default {
         },
 
         {
-          title: "Electronics",
-          link: "/electronics",
+          title: "رزمی و مبارزه ایی",
+          link: "/رزمی و مبارزه ایی",
           icon: "mdi-Saeed",
         },
 
         {
-          title: "Jewelery",
-          link: "/jewelery",
+          title: "بدنسازی و تناسب اندام",
+          link: "/بدنسازی و تناسب اندام",
           icon: "mdi-Saman",
         },
-        {
-          title: "Men",
-          link: "/men clothing",
-          icon: "mdi-Ali",
-        },
+        // {
+        //   title: "Men",
+        //   link: "/men clothing",
+        //   icon: "mdi-Ali",
+        // },
         
-        {
-          title: "Women",
-          link: "/women clothing",
-          icon: "mdi-Ali",
-        },
+        // {
+        //   title: "Women",
+        //   link: "/women clothing",
+        //   icon: "mdi-Ali",
+        // },
       ],
     };
   },
 
-  mounted() {
-    this.$axios
-      .$get("https://fakestoreapi.com/products/categories")
-      .then((response) => {
-        this.categories = response;
-      });
-  },
+  // mounted() {
+  //   this.$axios
+  //     .$get("https://fakestoreapi.com/products/categories")
+  //     .then((response) => {
+  //       this.categories = response;
+  //     });
+  // },
 };
 </script>
 
