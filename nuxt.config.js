@@ -60,6 +60,7 @@ export default {
   ** https://github.com/nuxt-community/vuetify-module
   */
   vuetify: {
+    rtl: true,
     customVariables: ['~/assets/variables.scss'],
     theme: {
       dark: true,
