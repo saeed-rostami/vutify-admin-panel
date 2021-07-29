@@ -89,7 +89,7 @@
                   <!--PROPERTY-->
                   <v-col cols="12" >
                     <v-row>
-                      <v-col v-for="(input, index) in inputs" cols="12" sm="6" md="4">
+                      <v-col v-for="(input, index) in inputs" v-bind:key="index" cols="12" sm="6" md="4">
                         <v-text-field
                           :name="propertyName"
                           label="ویژگی..."
