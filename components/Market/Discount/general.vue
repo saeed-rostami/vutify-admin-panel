@@ -55,57 +55,68 @@
 
 <!-- START -->
 
-                  <v-col cols="12" sm="6" md="4">
-                    <v-menu
-                      v-model="startDatePicker"
-                      :close-on-content-click="false"
-                      :nudge-right="40"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="auto"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="editedItem.start"
-                          label="تاریخ شروع"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="editedItem.start"
-                        @input="startDatePicker = false"
-                      ></v-date-picker>
-                    </v-menu>
+                  <!--<v-col cols="12" sm="6" md="4">-->
+                    <!--<v-menu-->
+                      <!--v-model="startDatePicker"-->
+                      <!--:close-on-content-click="false"-->
+                      <!--:nudge-right="40"-->
+                      <!--transition="scale-transition"-->
+                      <!--offset-y-->
+                      <!--min-width="auto"-->
+                    <!--&gt;-->
+                      <!--<template v-slot:activator="{ on, attrs }">-->
+                        <!--<v-text-field-->
+                          <!--v-model="editedItem.start"-->
+                          <!--label="تاریخ شروع"-->
+                          <!--prepend-icon="mdi-calendar"-->
+                          <!--readonly-->
+                          <!--v-bind="attrs"-->
+                          <!--v-on="on"-->
+                        <!--&gt;</v-text-field>-->
+                      <!--</template>-->
+                      <!--<v-date-picker-->
+                        <!--v-model="editedItem.start"-->
+                        <!--@input="startDatePicker = false"-->
+                      <!--&gt;</v-date-picker>-->
+                    <!--</v-menu>-->
+                  <!--</v-col>-->
+                  <v-col cols="12" sm="6" md="6">
+                    <client-only>
+                      <label>تاریخ شروع</label>
+                      <PersianDatePicker v-model="editedItem.start"/>
+                    </client-only>
                   </v-col>
-
                   <!-- EDN -->
-                   <v-col cols="12" sm="6" md="4">
-                    <v-menu
-                      v-model="endDatePicker"
-                      :close-on-content-click="false"
-                      :nudge-right="40"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="auto"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="editedItem.end"
-                          label="تاریخ پایان"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="editedItem.end"
-                        @input="endDatePicker = false"
-                      ></v-date-picker>
-                    </v-menu>
+                   <!--<v-col cols="12" sm="6" md="4">-->
+                    <!--<v-menu-->
+                      <!--v-model="endDatePicker"-->
+                      <!--:close-on-content-click="false"-->
+                      <!--:nudge-right="40"-->
+                      <!--transition="scale-transition"-->
+                      <!--offset-y-->
+                      <!--min-width="auto"-->
+                    <!--&gt;-->
+                      <!--<template v-slot:activator="{ on, attrs }">-->
+                        <!--<v-text-field-->
+                          <!--v-model="editedItem.end"-->
+                          <!--label="تاریخ پایان"-->
+                          <!--prepend-icon="mdi-calendar"-->
+                          <!--readonly-->
+                          <!--v-bind="attrs"-->
+                          <!--v-on="on"-->
+                        <!--&gt;</v-text-field>-->
+                      <!--</template>-->
+                      <!--<v-date-picker-->
+                        <!--v-model="editedItem.end"-->
+                        <!--@input="endDatePicker = false"-->
+                      <!--&gt;</v-date-picker>-->
+                    <!--</v-menu>-->
+                  <!--</v-col>-->
+                  <v-col cols="12" sm="6" md="6">
+                    <client-only>
+                      <label>تاریخ پایان</label>
+                      <PersianDatePicker v-model="editedItem.end"/>
+                    </client-only>
                   </v-col>
                 </v-row>
               </v-container>
@@ -169,6 +180,9 @@
 
 <script>
 export default {
+  components: {
+    PersianDatePicker: () => import('vue-persian-datetime-picker'),
+  },
   data: () => ({
     startDatePicker: false,
     endDatePicker: false,

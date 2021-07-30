@@ -69,31 +69,38 @@
                     </v-select>
                   </v-col>
 
+                  <!--<v-col cols="12" sm="6" md="6">-->
+                    <!--<v-menu-->
+                      <!--v-model="releaseDatePicker"-->
+                      <!--:close-on-content-click="false"-->
+                      <!--:nudge-right="40"-->
+                      <!--transition="scale-transition"-->
+                      <!--offset-y-->
+                      <!--min-width="auto"-->
+                    <!--&gt;-->
+                      <!--<template v-slot:activator="{ on, attrs }">-->
+                        <!--<v-text-field-->
+                          <!--v-model="editedItem.release"-->
+                          <!--label="تاریخ انتشار"-->
+                          <!--prepend-icon="mdi-calendar"-->
+                          <!--readonly-->
+                          <!--v-bind="attrs"-->
+                          <!--v-on="on"-->
+                        <!--&gt;</v-text-field>-->
+                      <!--</template>-->
+                      <!--<v-date-picker-->
+                        <!--v-model="editedItem.release"-->
+                        <!--@input="releaseDatePicker = false"-->
+                      <!--&gt;</v-date-picker>-->
+                    <!--</v-menu>-->
+                  <!--</v-col>-->
                   <v-col cols="12" sm="6" md="6">
-                    <v-menu
-                      v-model="releaseDatePicker"
-                      :close-on-content-click="false"
-                      :nudge-right="40"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="auto"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="editedItem.release"
-                          label="تاریخ انتشار"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="editedItem.release"
-                        @input="releaseDatePicker = false"
-                      ></v-date-picker>
-                    </v-menu>
+                    <client-only>
+                      <label>تاریخ انتشار</label>
+                      <PersianDatePicker v-model="editedItem.release"/>
+                    </client-only>
                   </v-col>
+
 
                   <v-col cols="12" sm="6" md="6">
                     <v-file-input
@@ -190,6 +197,9 @@
 
 <script>
   export default {
+    components: {
+      PersianDatePicker: () => import('vue-persian-datetime-picker'),
+    },
 
     data: () => ({
       releaseDatePicker: false,
@@ -249,6 +259,7 @@
             category: 'الکترونیکی',
             description: 'الکترونیکی',
             image: "https://cdn.vuetifyjs.com/images/john.jpg",
+            release : (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10)
           },
         ]
       },
