@@ -2,3 +2,14 @@
 //
 // The variables you want to modify
 // $font-size-root: 20px;
+$body-font-family: 'Vazir';
+//$heading-font-family: 'Vazir';
+//@import "font/Vazir-Light-FD-WOL.woff";
+
+@font-face {
+  font-family: 'Vazir';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('~assets/font/Vazir-Light-FD-WOL.ttf') format('truetype');
+}
