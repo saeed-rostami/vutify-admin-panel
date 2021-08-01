@@ -83,7 +83,8 @@
 
                   <v-col cols="12">
 
-                    <ckeditor v-model="editedItem.text" v-bind:config="ckConfig" />
+                    <label>متن ایمیل</label>
+                    <ckeditor  v-model="editedItem.text" v-bind:config="ckConfig" />
                     <!--<v-textarea-->
                       <!--v-model="editedItem.text"-->
                       <!--label="توضیحات"-->

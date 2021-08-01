@@ -110,6 +110,7 @@
                   </v-col>
 
                   <v-col cols="12">
+                    <label>توضیحات</label>
                     <ckeditor
                       v-model="editedItem.description"
                       v-bind:config="ckConfig"/>

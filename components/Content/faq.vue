@@ -31,6 +31,7 @@
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="12" md="12">
+                    <label>پاسخ</label>
                     <ckeditor v-model="editedItem.answer" v-bind:config="ckConfig" />
                     <!--<v-text-field v-model="editedItem.answer"-->
                                   <!--label="خلاصه پاسخ" v-bind:items="selectOptions">-->

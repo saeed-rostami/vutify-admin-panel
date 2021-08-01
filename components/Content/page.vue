@@ -40,6 +40,7 @@
 
                   <v-col cols="12">
 
+                    <label>محتوا</label>
                     <ckeditor  v-model="editedItem.description" v-bind:config="ckConfig"/>
                     <!--<v-textarea-->
                       <!--v-model="editedItem.description"-->
