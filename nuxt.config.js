@@ -36,7 +36,6 @@ export default {
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
-    {src: "~/plugins/PersianDatePicker" , mode: "client"}
   ],
   /*
   ** Auto import components

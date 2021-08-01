@@ -52,29 +52,34 @@
 
 
                   <v-col cols="12" sm="6" md="4">
-                    <v-menu
-                      v-model="releaseDatePicker"
-                      :close-on-content-click="false"
-                      :nudge-right="40"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="auto"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="editedItem.releaseDate"
-                          label="تاریخ ارسال"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="editedItem.releaseDate"
-                        @input="releaseDatePicker = false"
-                      ></v-date-picker>
-                    </v-menu>
+                    <!--<v-menu-->
+                      <!--v-model="releaseDatePicker"-->
+                      <!--:close-on-content-click="false"-->
+                      <!--:nudge-right="40"-->
+                      <!--transition="scale-transition"-->
+                      <!--offset-y-->
+                      <!--min-width="auto"-->
+                    <!--&gt;-->
+                      <!--<template v-slot:activator="{ on, attrs }">-->
+                        <!--<v-text-field-->
+                          <!--v-model="editedItem.releaseDate"-->
+                          <!--label="تاریخ ارسال"-->
+                          <!--prepend-icon="mdi-calendar"-->
+                          <!--readonly-->
+                          <!--v-bind="attrs"-->
+                          <!--v-on="on"-->
+                        <!--&gt;</v-text-field>-->
+                      <!--</template>-->
+                      <!--<v-date-picker-->
+                        <!--v-model="editedItem.releaseDate"-->
+                        <!--@input="releaseDatePicker = false"-->
+                      <!--&gt;</v-date-picker>-->
+                    <!--</v-menu>-->
+
+                    <client-only>
+                      <label>تاریخ انتشار</label>
+                      <PersianDatePicker v-model="editedItem.releaseDate"/>
+                    </client-only>
                   </v-col>
 
                   <v-col cols="12">
@@ -166,6 +171,9 @@
 <script>
   export default {
 
+    components: {
+      PersianDatePicker: () => import('vue-persian-datetime-picker'),
+    },
     data: () => ({
       releaseDatePicker: false,
       dialog: false,

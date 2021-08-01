@@ -16,7 +16,7 @@
         <v-toolbar-title>محصولات</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" max-width="1200">
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
               ایجاد
@@ -75,19 +75,20 @@
 
                   <v-col cols="12">
 
-                    <v-textarea
-                      v-model="editedItem.description"
-                      label="توضیحات"
-                      auto-grow
-                      outlined
-                      rows="3"
-                      row-height="25"
-                      shaped
-                    ></v-textarea>
+                    <ckeditor v-model="editedItem.description" v-bind:config="ckConfig"/>
+                    <!--<v-textarea-->
+                      <!--v-model="editedItem.description"-->
+                      <!--label="توضیحات"-->
+                      <!--auto-grow-->
+                      <!--outlined-->
+                      <!--rows="3"-->
+                      <!--row-height="25"-->
+                      <!--shaped-->
+                    <!--&gt;</v-textarea>-->
                   </v-col>
 
                   <!--PROPERTY-->
-                  <v-col cols="12" >
+                  <v-col cols="12">
                     <v-row>
                       <v-col v-for="(input, index) in inputs" v-bind:key="index" cols="12" sm="6" md="4">
                         <v-text-field
@@ -195,151 +196,194 @@
 </template>
 
 <script>
+
+  let CKEditor;
+  if (process.browser) {
+    CKEditor = require("ckeditor4-vue")
+  }
   export default {
-    data: () => ({
-      propertyName: "",
-      propertyValue: "",
-      inputs: [],
-      selectOptions: ["Foo", "Bar", "Fizz", "Buzz"],
-      dialog: false,
-      dialogDelete: false,
-      headers: [
-        {text: "#", value: "id"},
-        {text: "نام", value: "name"},
-        {text: "تصویر", value: "image"},
-        {text: "قیمت", value: "price"},
-        {text: "وزن", value: "weight"},
-        {text: "دسته", value: "category"},
-        {text: "فرم", value: "property"},
-        {text: "تنظیمات", value: "actions", sortable: false},
-      ],
-      products: [],
-      editedIndex: -1,
-      editedItem: {
-
-        name: "",
-        image: "",
-        price: "",
-        weight: "",
-        category: "",
-        property: "",
-        description: "",
-
-      },
-      defaultItem: {
-        name: "",
-        image: "",
-        price: "",
-        weight: "",
-        category: "",
-        property: "",
-        description: "",
-      },
-    }),
-
-    computed: {
-      formTitle() {
-        return this.editedIndex === -1 ? "ایجاد" : "ویرایش";
-      },
+    components: {
+      ckeditor: process.browser ? CKEditor.component : null,
+  },
+  data: () => ({
+    ckConfig: {
+      language: 'fa',
     },
+    propertyName: "",
+    propertyValue: "",
+    inputs: [],
+    selectOptions: ["Foo", "Bar", "Fizz", "Buzz"],
+    dialog: false,
+    dialogDelete: false,
+    headers: [
+      {text: "#", value: "id"},
+      {text: "نام", value: "name"},
+      {text: "تصویر", value: "image"},
+      {text: "قیمت", value: "price"},
+      {text: "وزن", value: "weight"},
+      {text: "دسته", value: "category"},
+      {text: "فرم", value: "property"},
+      {text: "تنظیمات", value: "actions", sortable: false},
+    ],
+    products: [],
+    editedIndex: -1,
+    editedItem: {
 
-    watch: {
-      dialog(val) {
-        val || this.close();
-      },
-      dialogDelete(val) {
-        val || this.closeDelete();
-      },
+      name: "",
+      image: "",
+      price: "",
+      weight: "",
+      category: "",
+      property: "",
+      description: "",
+
     },
-
-    created() {
-      this.addRow();
-      this.initialize();
+    defaultItem: {
+      name: "",
+      image: "",
+      price: "",
+      weight: "",
+      category: "",
+      property: "",
+      description: "",
     },
+  }),
 
-    methods: {
+    computed
+  :
+  {
+    formTitle()
+    {
+      return this.editedIndex === -1 ? "ایجاد" : "ویرایش";
+    }
+  ,
+  }
+  ,
 
-      deleteRow(index) {
-        this.inputs.splice(index, 1);
-      },
+  watch: {
+    dialog(val)
+    {
+      val || this.close();
+    }
+  ,
+    dialogDelete(val)
+    {
+      val || this.closeDelete();
+    }
+  ,
+  }
+  ,
 
-      addRow() {
-        this.inputs.push({
-          propertyName: "",
-          propertyValue: "",
-        });
-      },
-      initialize() {
-        this.products = [
-          {
-            id: "1",
-            name: "Iphone",
-            image: "https://cdn.vuetifyjs.com/images/john.jpg",
-            price: "200",
-            weight: "1.5",
-            category: "برقی",
-            property: "xx",
-            description: "",
+  created()
+  {
+    this.addRow();
+    this.initialize();
+  }
+  ,
 
-          },
+  methods: {
 
-          {
-            id: "2",
-            name: "samsung",
-            image: require("@/static/avatar/man_4.jpg"),
-            price: "500",
-            weight: "5.5",
-            category: "برقی",
-            property: "ssxx",
-            description: "",
+    deleteRow(index)
+    {
+      this.inputs.splice(index, 1);
+    }
+  ,
 
-          },
-        ];
-      },
+    addRow()
+    {
+      this.inputs.push({
+        propertyName: "",
+        propertyValue: "",
+      });
+    }
+  ,
+    initialize()
+    {
+      this.products = [
+        {
+          id: "1",
+          name: "Iphone",
+          image: "https://cdn.vuetifyjs.com/images/john.jpg",
+          price: "200",
+          weight: "1.5",
+          category: "برقی",
+          property: "xx",
+          description: "",
 
-      editItem(item) {
-        this.editedIndex = this.products.indexOf(item);
-        this.editedItem = Object.assign({}, item);
-        this.dialog = true;
-      },
+        },
 
-      deleteItem(item) {
-        this.editedIndex = this.products.indexOf(item);
-        this.editedItem = Object.assign({}, item);
-        this.dialogDelete = true;
-      },
+        {
+          id: "2",
+          name: "samsung",
+          image: require("@/static/avatar/man_4.jpg"),
+          price: "500",
+          weight: "5.5",
+          category: "برقی",
+          property: "ssxx",
+          description: "",
 
-      deleteItemConfirm() {
-        this.products.splice(this.editedIndex, 1);
-        this.closeDelete();
-      },
+        },
+      ];
+    }
+  ,
 
-      close() {
-        this.dialog = false;
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem);
-          this.editedIndex = -1;
-        });
-      },
+    editItem(item)
+    {
+      this.editedIndex = this.products.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialog = true;
+    }
+  ,
 
-      closeDelete() {
-        this.dialogDelete = false;
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem);
-          this.editedIndex = -1;
-        });
-      },
+    deleteItem(item)
+    {
+      this.editedIndex = this.products.indexOf(item);
+      this.editedItem = Object.assign({}, item);
+      this.dialogDelete = true;
+    }
+  ,
 
-      save() {
-        if (this.editedIndex > -1) {
-          Object.assign(this.products[this.editedIndex], this.editedItem);
-        } else {
-          this.products.push(this.editedItem);
-        }
-        this.close();
-      },
-    },
-  };
+    deleteItemConfirm()
+    {
+      this.products.splice(this.editedIndex, 1);
+      this.closeDelete();
+    }
+  ,
+
+    close()
+    {
+      this.dialog = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    }
+  ,
+
+    closeDelete()
+    {
+      this.dialogDelete = false;
+      this.$nextTick(() => {
+        this.editedItem = Object.assign({}, this.defaultItem);
+        this.editedIndex = -1;
+      });
+    }
+  ,
+
+    save()
+    {
+      if (this.editedIndex > -1) {
+        Object.assign(this.products[this.editedIndex], this.editedItem);
+      } else {
+        this.products.push(this.editedItem);
+      }
+      this.close();
+    }
+  ,
+  }
+  ,
+  }
+  ;
 </script>
 
 <style scoped>

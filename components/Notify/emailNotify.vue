@@ -18,7 +18,7 @@
         <v-spacer></v-spacer>
         <v-dialog
           v-model="dialog"
-          max-width="500px"
+          max-width="1200px"
         >
           <template v-slot:activator="{ on, attrs }">
             <v-btn
@@ -52,42 +52,47 @@
 
 
                   <v-col cols="12" sm="6" md="4">
-                    <v-menu
-                      v-model="releaseDatePicker"
-                      :close-on-content-click="false"
-                      :nudge-right="40"
-                      transition="scale-transition"
-                      offset-y
-                      min-width="auto"
-                    >
-                      <template v-slot:activator="{ on, attrs }">
-                        <v-text-field
-                          v-model="editedItem.releaseDate"
-                          label="تاریخ ارسال"
-                          prepend-icon="mdi-calendar"
-                          readonly
-                          v-bind="attrs"
-                          v-on="on"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker
-                        v-model="editedItem.releaseDate"
-                        @input="releaseDatePicker = false"
-                      ></v-date-picker>
-                    </v-menu>
+                    <!--<v-menu-->
+                      <!--v-model="releaseDatePicker"-->
+                      <!--:close-on-content-click="false"-->
+                      <!--:nudge-right="40"-->
+                      <!--transition="scale-transition"-->
+                      <!--offset-y-->
+                      <!--min-width="auto"-->
+                    <!--&gt;-->
+                      <!--<template v-slot:activator="{ on, attrs }">-->
+                        <!--<v-text-field-->
+                          <!--v-model="editedItem.releaseDate"-->
+                          <!--label="تاریخ ارسال"-->
+                          <!--prepend-icon="mdi-calendar"-->
+                          <!--readonly-->
+                          <!--v-bind="attrs"-->
+                          <!--v-on="on"-->
+                        <!--&gt;</v-text-field>-->
+                      <!--</template>-->
+                      <!--<v-date-picker-->
+                        <!--v-model="editedItem.releaseDate"-->
+                        <!--@input="releaseDatePicker = false"-->
+                      <!--&gt;</v-date-picker>-->
+                    <!--</v-menu>-->
+                    <client-only>
+                      <label>تاریخ انتشار</label>
+                      <PersianDatePicker v-model="editedItem.releaseDate"/>
+                    </client-only>
                   </v-col>
 
                   <v-col cols="12">
 
-                    <v-textarea
-                      v-model="editedItem.text"
-                      label="توضیحات"
-                      auto-grow
-                      outlined
-                      rows="3"
-                      row-height="25"
-                      shaped
-                    ></v-textarea>
+                    <ckeditor v-model="editedItem.text" v-bind:config="ckConfig" />
+                    <!--<v-textarea-->
+                      <!--v-model="editedItem.text"-->
+                      <!--label="توضیحات"-->
+                      <!--auto-grow-->
+                      <!--outlined-->
+                      <!--rows="3"-->
+                      <!--row-height="25"-->
+                      <!--shaped-->
+                    <!--&gt;</v-textarea>-->
                   </v-col>
 
 
@@ -164,17 +169,28 @@
 </template>
 
 <script>
+  let CKEditor;
+  if (process.browser) {
+    CKEditor = require("ckeditor4-vue")
+  }
   export default {
-
+    components: {
+      ckeditor: process.browser ? CKEditor.component : null,
+      PersianDatePicker: () => import('vue-persian-datetime-picker'),
+    },
     data: () => ({
+
+      ckConfig: {
+        language: 'fa',
+      },
       releaseDatePicker: false,
       dialog: false,
       dialogDelete: false,
       headers: [
-        { text: "#", value: "id" },
-        { text: 'نام', value: 'title' },
-        { text: 'تاریخ ارسال', value: 'releaseDate' },
-        { text: 'تنظیمات', value: 'actions', sortable: false },
+        {text: "#", value: "id"},
+        {text: 'نام', value: 'title'},
+        {text: 'تاریخ ارسال', value: 'releaseDate'},
+        {text: 'تنظیمات', value: 'actions', sortable: false},
       ],
       notifications: [],
       editedIndex: -1,
@@ -193,26 +209,26 @@
     }),
 
     computed: {
-      formTitle () {
+      formTitle() {
         return this.editedIndex === -1 ? 'ایجاد' : 'ویرایش'
       },
     },
 
     watch: {
-      dialog (val) {
+      dialog(val) {
         val || this.close()
       },
-      dialogDelete (val) {
+      dialogDelete(val) {
         val || this.closeDelete()
       },
     },
 
-    created () {
+    created() {
       this.initialize()
     },
 
     methods: {
-      initialize () {
+      initialize() {
         this.notifications = [
           {
             id: "1",
@@ -224,24 +240,24 @@
         ]
       },
 
-      editItem (item) {
+      editItem(item) {
         this.editedIndex = this.notifications.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
 
-      deleteItem (item) {
+      deleteItem(item) {
         this.editedIndex = this.notifications.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialogDelete = true
       },
 
-      deleteItemConfirm () {
+      deleteItemConfirm() {
         this.notifications.splice(this.editedIndex, 1)
         this.closeDelete()
       },
 
-      close () {
+      close() {
         this.dialog = false
         this.$nextTick(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
@@ -249,7 +265,7 @@
         })
       },
 
-      closeDelete () {
+      closeDelete() {
         this.dialogDelete = false
         this.$nextTick(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
@@ -257,7 +273,7 @@
         })
       },
 
-      save () {
+      save() {
         if (this.editedIndex > -1) {
           Object.assign(this.notifications[this.editedIndex], this.editedItem)
         } else {

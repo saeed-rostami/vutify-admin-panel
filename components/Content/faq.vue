@@ -10,7 +10,7 @@
         <v-toolbar-title>منو ها</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" max-width="1200">
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
               ایجاد
@@ -24,18 +24,19 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-col cols="12" sm="6" md="4">
+                  <v-col cols="12" sm="12" md="12">
                     <v-text-field
                       v-model="editedItem.question"
                       label="پرسش"
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.answer"
-                                  label="خلاصه پاسخ" v-bind:items="selectOptions">
+                  <v-col cols="12" sm="12" md="12">
+                    <ckeditor v-model="editedItem.answer" v-bind:config="ckConfig" />
+                    <!--<v-text-field v-model="editedItem.answer"-->
+                                  <!--label="خلاصه پاسخ" v-bind:items="selectOptions">-->
 
-                      >
-                    </v-text-field>
+                      <!--&gt;-->
+                    <!--</v-text-field>-->
                   </v-col>
 
 
@@ -108,8 +109,18 @@
 </template>
 
 <script>
+  let CKEditor;
+  if (process.browser) {
+    CKEditor = require("ckeditor4-vue")
+  }
   export default {
+    components: {
+      ckeditor: process.browser ? CKEditor.component : null,
+    },
     data: () => ({
+      ckConfig: {
+        language: 'fa',
+      },
       selectOptions: ['Foo', 'Bar', 'Fizz', 'Buzz'],
       dialog: false,
       dialogDelete: false,

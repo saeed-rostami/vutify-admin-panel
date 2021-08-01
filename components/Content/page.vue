@@ -10,7 +10,7 @@
         <v-toolbar-title> پیج ساز</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" max-width="1200">
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
               ایجاد
@@ -40,15 +40,16 @@
 
                   <v-col cols="12">
 
-                    <v-textarea
-                      v-model="editedItem.description"
-                      label="توضیحات"
-                      auto-grow
-                      outlined
-                      rows="3"
-                      row-height="25"
-                      shaped
-                    ></v-textarea>
+                    <ckeditor  v-model="editedItem.description" v-bind:config="ckConfig"/>
+                    <!--<v-textarea-->
+                      <!--v-model="editedItem.description"-->
+                      <!--label="توضیحات"-->
+                      <!--auto-grow-->
+                      <!--outlined-->
+                      <!--rows="3"-->
+                      <!--row-height="25"-->
+                      <!--shaped-->
+                    <!--&gt;</v-textarea>-->
                   </v-col>
 
                 </v-row>
@@ -120,8 +121,18 @@
 </template>
 
 <script>
+  let CKEditor;
+  if (process.browser) {
+    CKEditor = require("ckeditor4-vue")
+  }
   export default {
+    components: {
+      ckeditor: process.browser ? CKEditor.component : null,
+    },
     data: () => ({
+      ckConfig: {
+        language: 'fa',
+      },
       selectOptions: ['Foo', 'Bar', 'Fizz', 'Buzz'],
       dialog: false,
       dialogDelete: false,
