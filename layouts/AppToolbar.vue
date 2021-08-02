@@ -1,18 +1,18 @@
 <template>
-  <div class="d-flex justify-center">
+  <div class=" d-flex justify-center">
     <v-tooltip right>
       <template v-slot:activator="{ on }">
         <div v-on="on">
           <v-btn small fab v-on:click="toTheme" v-on="on">
-            <v-icon large>{{changeTheme}}</v-icon>
+            <v-icon large>{{ changeTheme }}</v-icon>
           </v-btn>
         </div>
       </template>
       <span>تغییر رنگ پوسته</span>
     </v-tooltip>
 
-
     <notifications />
+
     <user-acc />
   </div>
 </template>

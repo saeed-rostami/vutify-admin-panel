@@ -10,7 +10,7 @@
     >
       <template v-slot:activator="{ on }">
         <v-btn icon text slot="activator" v-on="on">
-          <v-badge color="red" overlap>
+          <v-badge color="blue" overlap>
             <span slot="badge"> {{ notifications.length }}</span>
             <v-icon large>mdi-bell-ring</v-icon>
           </v-badge>

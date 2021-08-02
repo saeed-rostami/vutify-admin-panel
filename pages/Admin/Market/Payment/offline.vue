@@ -32,18 +32,15 @@ export default {
       {
         text: "مارکت",
         disabled: false,
-        href: "admin/market",
       },
       {
         text: "پرداخت ها",
         disabled: false,
-        href: "/",
       },
 
         {
         text: "پرداخت های آفلاین",
         disabled: true,
-        href: "/",
       },
     ],
   }),

@@ -37,12 +37,10 @@
         {
           text: "کاربران",
           disabled: false,
-          href: "admin/notify",
         },
         {
           text: "اعلانیه های ایمیلی",
           disabled: true,
-          href: "/",
         },
       ],
     }),

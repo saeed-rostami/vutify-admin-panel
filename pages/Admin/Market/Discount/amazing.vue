@@ -32,18 +32,15 @@ export default {
       {
         text: "مارکت",
         disabled: false,
-        href: "/admin/market",
-      },
+        href: "/admin/market",      },
        {
         text: "تخفیف ها ",
         disabled: false,
-        href: "/admin/market/discount",
-      },
+        href: "/admin/market/discount",      },
       {
         text: "فروش شگفت انگیز",
         disabled: true,
-        href: "/",
-      },
+        href: "/",      },
     ],
   }),
 };

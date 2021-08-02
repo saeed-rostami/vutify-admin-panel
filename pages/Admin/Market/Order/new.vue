@@ -24,7 +24,6 @@
 </template>
 
 <script>
-import index from '@/components/Market/Order/index.vue';
 export default {
   components: { index },
   data: () => ({
@@ -32,17 +31,14 @@ export default {
       {
         text: "مارکت",
         disabled: false,
-        href: "/admin/market",
       },
        {
         text: "سفارشات",
         disabled: false,
-        href: "/admin/market/order",
       },
       {
         text: "سفارشات جدید",
         disabled: true,
-        href: "/",
       },
     ],
   }),

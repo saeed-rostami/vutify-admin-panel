@@ -32,17 +32,14 @@ export default {
       {
         text: "مارکت",
         disabled: false,
-        href: "/admin/market",
       },
        {
         text: "سفارشات",
         disabled: false,
-        href: "/admin/market/order",
       },
       {
         text: "همه سفارشات",
         disabled: true,
-        href: "/",
       },
     ],
   }),

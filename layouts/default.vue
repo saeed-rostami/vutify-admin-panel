@@ -176,7 +176,10 @@
       <v-btn icon @click.stop="fixed = !fixed">
         <v-icon>mdi-minus</v-icon>
       </v-btn> -->
-      <v-toolbar-title v-text="title" />
+      <!--<v-toolbar-title  v-text="title" />-->
+      <v-btn  color="blue"
+              elevation="22"
+              outlined to="/">{{title}}</v-btn>
 
       <v-spacer></v-spacer>
 

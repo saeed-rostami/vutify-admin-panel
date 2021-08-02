@@ -37,12 +37,10 @@
         {
           text: "تیکت ها",
           disabled: false,
-          href: "admin/ticket",
         },
         {
           text: "تیکت های باز",
           disabled: true,
-          href: "/",
         },
       ],
     }),

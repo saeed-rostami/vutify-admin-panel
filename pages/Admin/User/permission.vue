@@ -37,12 +37,10 @@
         {
           text: "کاربران",
           disabled: false,
-          href: "admin/user",
         },
         {
           text: "سطح دسترسی",
           disabled: true,
-          href: "/",
         },
       ],
     }),

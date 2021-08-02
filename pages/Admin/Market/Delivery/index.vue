@@ -32,12 +32,10 @@ export default {
       {
         text: "مارکت",
         disabled: false,
-        href: "admin/market",
       },
       {
         text: "روش ارسال",
         disabled: true,
-        href: "/",
       },
     ],
   }),

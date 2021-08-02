@@ -37,13 +37,11 @@
         {
           text: "تنظیمات",
           disabled: false,
-          href: "admin/setting",
         },
 
         {
           text: "تنظیمات",
           disabled: true,
-          href: "/",
         },
       ],
     }),
