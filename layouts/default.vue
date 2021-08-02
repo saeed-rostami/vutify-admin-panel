@@ -41,7 +41,12 @@
               <v-list-item-title>سفارشات</v-list-item-title>
             </v-list-item>
 
-            <v-list-item dense v-for="(order, i) in orders" :key="i" :to="order.to">
+            <v-list-item
+              dense
+              v-for="(order, i) in orders"
+              :key="i"
+              :to="order.to"
+            >
               <v-list-item-title>{{ order.title }}</v-list-item-title>
             </v-list-item>
           </v-list-group>
@@ -106,11 +111,7 @@
             <v-list-item-title>بخش کاربران</v-list-item-title>
           </v-list-item>
 
-          <v-list-item
-            v-for="(user, i) in users"
-            v-bind:key="i"
-            :to="user.to"
-          >
+          <v-list-item v-for="(user, i) in users" v-bind:key="i" :to="user.to">
             <v-list-item-title>{{ user.title }}</v-list-item-title>
           </v-list-item>
         </v-list-group>
@@ -177,18 +178,19 @@
         <v-icon>mdi-minus</v-icon>
       </v-btn> -->
       <!--<v-toolbar-title  v-text="title" />-->
-      <v-btn  color="blue"
-              elevation="22"
-              outlined to="/">{{title}}</v-btn>
+      <v-tooltip bottom>
+      <template v-slot:activator="{ on }">
+      <v-btn v-on="on" color="blue" elevation="17" fab icon outlined plain to="/">
+      <v-icon>mdi-home</v-icon></v-btn>
+      </template>
+      <span>صفحه اصلی</span>
+
+      </v-tooltip>
 
       <v-spacer></v-spacer>
 
-  
-     <app-toolbar></app-toolbar>
-
-    
+      <app-toolbar></app-toolbar>
     </v-app-bar>
-
 
     <v-main>
       <v-container>
@@ -246,9 +248,7 @@ export default {
         { title: "پرداخت در محل", to: "/admin/market/payment/location" },
       ],
 
-      deliveries: [
-         { title: "روش های ارسال", to: "/admin/market/delivery" },
-      ],
+      deliveries: [{ title: "روش های ارسال", to: "/admin/market/delivery" }],
       contents: [
         { title: "دسته بندی", to: "/admin/content/category" },
         { title: "پست", to: "/admin/content/post" },

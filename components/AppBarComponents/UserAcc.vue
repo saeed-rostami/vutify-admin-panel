@@ -8,10 +8,15 @@
     transition="scale-transition"
   >
     <template v-slot:activator="{ on }">
-      <v-btn icon large text v-on="on">
-        <v-avatar size="40px">
+      <v-btn icon medium text v-on="on">
+        <v-tooltip bottom>
+      <template v-slot:activator="{ on }">
+        <v-avatar size="30px" v-on="on">
           <img src="@/static/avatar/man_4.jpg" alt="Michael Wang" />
         </v-avatar>
+         </template>
+      <span>حساب کاربری</span>
+    </v-tooltip>
       </v-btn>
     </template>
 

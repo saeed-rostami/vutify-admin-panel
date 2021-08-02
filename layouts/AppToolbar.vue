@@ -1,10 +1,10 @@
 <template>
   <div class=" d-flex justify-center">
-    <v-tooltip right>
+    <v-tooltip bottom>
       <template v-slot:activator="{ on }">
         <div v-on="on">
           <v-btn small fab v-on:click="toTheme" v-on="on">
-            <v-icon large>{{ changeTheme }}</v-icon>
+            <v-icon medium>{{ changeTheme }}</v-icon>
           </v-btn>
         </div>
       </template>
