@@ -34,13 +34,24 @@
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       v-model="editedItem.name"
+                      :error-messages="nameErrors"
+                      :counter="32"
                       label="نام"
+                      required
+                      @input="$v.editedItem.name.$touch()"
+                      @blur="$v.editedItem.name.$touch()"
+                      v-model:trim="$v.editedItem.name.$model"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-file-input
                       v-model="editedItem.logo"
+                      :error-messages="imageErrors"
                       label="لوگو"
+                      required
+                      @input="$v.editedItem.logo.$touch()"
+                      @blur="$v.editedItem.logo.$touch()"
+                      v-model:trim="$v.editedItem.logo.$model"
                     ></v-file-input>
                   </v-col>
                   <v-col cols="12" sm="6" md="4"></v-col>
@@ -107,7 +118,19 @@
 </template>
 
 <script>
+  import {validationMixin} from 'vuelidate'
+  import {required} from 'vuelidate/lib/validators'
+
   export default {
+    mixins: [validationMixin],
+
+    validations: {
+      editedItem: {
+        name: {required},
+        logo: {required},
+      }
+    },
+
     data: () => ({
       dialog: false,
       dialogDelete: false,
@@ -130,6 +153,23 @@
     }),
 
     computed: {
+      nameErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.name.$dirty) return errors;
+
+        !this.$v.editedItem.name.required && errors.push('نام دسته بندی الزامی است');
+        return errors
+      },
+
+      imageErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.logo.$dirty) return errors;
+
+        !this.$v.editedItem.logo.required && errors.push('تصویر دسته بندی الزامی است');
+        return errors
+      },
+
+
       formTitle() {
         return this.editedIndex === -1 ? "ایجاد" : "ویرایش";
       },

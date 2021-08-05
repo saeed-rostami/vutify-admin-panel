@@ -27,7 +27,13 @@
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       v-model="editedItem.name"
+                      :error-messages="nameErrors"
+                      :counter="32"
                       label="نام"
+                      required
+                      @input="$v.editedItem.name.$touch()"
+                      @blur="$v.editedItem.name.$touch()"
+                      v-model:trim="$v.editedItem.name.$model"
                     ></v-text-field>
                   </v-col>
 
@@ -35,6 +41,12 @@
                     <v-text-field
                       v-model="editedItem.price"
                       label="هزینه ارسال"
+
+                      :error-messages="priceErrors"
+                      required
+                      @input="$v.editedItem.price.$touch()"
+                      @blur="$v.editedItem.price.$touch()"
+                      v-model:trim="$v.editedItem.price.$model"
                     ></v-text-field>
                   </v-col>
 
@@ -42,6 +54,12 @@
                     <v-text-field
                       v-model="editedItem.time"
                       label="زمان ارسال"
+
+                      :error-messages="timeErrors"
+                      required
+                      @input="$v.editedItem.time.$touch()"
+                      @blur="$v.editedItem.time.$touch()"
+                      v-model:trim="$v.editedItem.time.$model"
                     ></v-text-field>
                   </v-col>
                 </v-row>
@@ -104,7 +122,20 @@
 </template>
 
 <script>
+
+  import {validationMixin} from 'vuelidate'
+  import {required} from 'vuelidate/lib/validators'
+
 export default {
+  mixins: [validationMixin],
+
+  validations: {
+    editedItem: {
+      name: {required},
+      price: {required},
+      time: {required},
+    }
+  },
   data: () => ({
     dialog: false,
     dialogDelete: false,
@@ -130,6 +161,30 @@ export default {
   }),
 
   computed: {
+    nameErrors() {
+      const errors = [];
+      if (!this.$v.editedItem.name.$dirty) return errors;
+
+      !this.$v.editedItem.name.required && errors.push('نام دسته بندی الزامی است');
+      return errors
+    },
+
+    priceErrors() {
+      const errors = [];
+      if (!this.$v.editedItem.price.$dirty) return errors;
+
+      !this.$v.editedItem.price.required && errors.push('هزینه ارسال الزامی است');
+      return errors
+    },
+
+    timeErrors() {
+      const errors = [];
+      if (!this.$v.editedItem.time.$dirty) return errors;
+
+      !this.$v.editedItem.time.required && errors.push('زمان ارسال الزامی است');
+      return errors
+    },
+
     formTitle() {
       return this.editedIndex === -1 ? "ایجاد" : "ویرایش";
     },

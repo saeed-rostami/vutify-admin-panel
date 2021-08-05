@@ -27,12 +27,26 @@
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       v-model="editedItem.name"
+                      :error-messages="nameErrors"
+                      :counter="32"
                       label="نام"
+                      required
+                      @input="$v.editedItem.name.$touch()"
+                      @blur="$v.editedItem.name.$touch()"
+                      v-model:trim="$v.editedItem.name.$model"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
-                    <v-text-field v-model="editedItem.address"
-                                  label="آدرس صفحه" v-bind:items="selectOptions">
+                    <v-text-field
+                      v-model="editedItem.address"
+                      label="آدرس صفحه"
+                      :error-messages="addressErrors"
+                      required
+                      @input="$v.editedItem.address.$touch()"
+                      @blur="$v.editedItem.address.$touch()"
+                      v-model:trim="$v.editedItem.address.$model"
+
+                    >
 
                       >
                     </v-text-field>
@@ -41,15 +55,15 @@
                   <v-col cols="12">
 
                     <label>محتوا</label>
-                    <ckeditor  v-model="editedItem.description" v-bind:config="ckConfig"/>
+                    <ckeditor v-model="editedItem.description" v-bind:config="ckConfig"/>
                     <!--<v-textarea-->
-                      <!--v-model="editedItem.description"-->
-                      <!--label="توضیحات"-->
-                      <!--auto-grow-->
-                      <!--outlined-->
-                      <!--rows="3"-->
-                      <!--row-height="25"-->
-                      <!--shaped-->
+                    <!--v-model="editedItem.description"-->
+                    <!--label="توضیحات"-->
+                    <!--auto-grow-->
+                    <!--outlined-->
+                    <!--rows="3"-->
+                    <!--row-height="25"-->
+                    <!--shaped-->
                     <!--&gt;</v-textarea>-->
                   </v-col>
 
@@ -122,6 +136,9 @@
 </template>
 
 <script>
+  import {validationMixin} from 'vuelidate'
+  import {required} from 'vuelidate/lib/validators'
+
   let CKEditor;
   if (process.browser) {
     CKEditor = require("ckeditor4-vue")
@@ -129,6 +146,15 @@
   export default {
     components: {
       ckeditor: process.browser ? CKEditor.component : null,
+    },
+
+    mixins: [validationMixin],
+
+    validations: {
+      editedItem: {
+        name: {required},
+        address: {required},
+      }
     },
     data: () => ({
       ckConfig: {
@@ -161,6 +187,21 @@
     }),
 
     computed: {
+      nameErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.name.$dirty) return errors;
+
+        !this.$v.editedItem.name.required && errors.push('نام الزامی است');
+        return errors
+      },
+
+      addressErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.address.$dirty) return errors;
+
+        !this.$v.editedItem.address.required && errors.push('آدرس صفحه الزامی است');
+        return errors
+      },
       formTitle() {
         return this.editedIndex === -1 ? "ایجاد" : "ویرایش";
       },

@@ -35,6 +35,12 @@
                     <v-text-field
                       v-model="editedItem.percent"
                       label="درصد تخفیف"
+
+                      :error-messages="percentErrors"
+                      required
+                      @input="$v.editedItem.percent.$touch()"
+                      @blur="$v.editedItem.percent.$touch()"
+                      v-model:trim="$v.editedItem.percent.$model"
                     ></v-text-field>
                   </v-col>
                  
@@ -43,6 +49,12 @@
                     <v-text-field
                       v-model="editedItem.product"
                       label="نام کالا"
+
+                      :error-messages="productErrors"
+                      required
+                      @input="$v.editedItem.product.$touch()"
+                      @blur="$v.editedItem.product.$touch()"
+                      v-model:trim="$v.editedItem.product.$model"
                     ></v-text-field>
                   </v-col>
 
@@ -52,7 +64,14 @@
                   <v-col cols="12" sm="6" md="6">
                     <client-only>
                       <label>تاریخ شروع</label>
-                   <PersianDatePicker v-model="editedItem.start" />
+                   <PersianDatePicker v-model="editedItem.start"
+                                      :error-messages="startErrors"
+                                      required
+                                      @input="$v.editedItem.start.$touch()"
+                                      @blur="$v.editedItem.start.$touch()"
+                                      v-model:trim="$v.editedItem.start.$model"
+
+                   />
                     </client-only>
                   </v-col>
                   <!--<v-col cols="12" sm="6" md="4">-->
@@ -110,7 +129,14 @@
                   <v-col cols="12" sm="6" md="6">
                     <client-only>
                       <label>تاریخ پایان</label>
-                      <PersianDatePicker v-model="editedItem.end"/>
+                      <PersianDatePicker v-model="editedItem.end"
+                                         :error-messages="endErrors"
+                                         required
+                                         @input="$v.editedItem.end.$touch()"
+                                         @blur="$v.editedItem.end.$touch()"
+                                         v-model:trim="$v.editedItem.end.$model"
+
+                      />
                     </client-only>
                   </v-col>
 
@@ -175,9 +201,21 @@
 </template>
 
 <script>
+  import {validationMixin} from 'vuelidate'
+  import {required} from 'vuelidate/lib/validators'
 export default {
+  mixins: [validationMixin],
   components: {
     PersianDatePicker: () => import('vue-persian-datetime-picker'),
+  },
+
+  validations: {
+    editedItem: {
+      percent: {required},
+      product: {required},
+      start: {required},
+      end: {required},
+    }
   },
   data: () => ({
     startDatePicker: false,
@@ -213,6 +251,37 @@ export default {
   }),
 
   computed: {
+
+    productErrors(){
+      const errors = [];
+      if (!this.$v.editedItem.product.$dirty) return errors;
+
+      !this.$v.editedItem.product.required && errors.push('نام کالا الزامی است');
+      return errors
+    },
+
+    percentErrors(){
+      const errors = [];
+      if (!this.$v.editedItem.percent.$dirty) return errors;
+
+      !this.$v.editedItem.percent.required && errors.push('درصد تخفیف الزامی است');
+      return errors
+    },
+
+    startErrors() {
+      const errors = [];
+      if (!this.$v.editedItem.start.$dirty) return errors;
+
+      !this.$v.editedItem.start.required && errors.push('تاریخ شروع الزامی است');
+      return errors
+    },
+    endErrors() {
+      const errors = [];
+      if (!this.$v.editedItem.end.$dirty) return errors;
+
+      !this.$v.editedItem.end.required && errors.push('تاریخ پایان الزامی است');
+      return errors
+    },
     formTitle() {
       return this.editedIndex === -1 ? "ایجاد" : "ویرایش";
     },

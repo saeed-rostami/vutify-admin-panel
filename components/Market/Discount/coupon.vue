@@ -34,18 +34,34 @@
                     <v-text-field
                       v-model="editedItem.coupon_id"
                       label="کد کوپن"
+                      :error-messages="couponIDErrors"
+                      :counter="32"
+                      required
+                      @input="$v.editedItem.coupon_id.$touch()"
+                      @blur="$v.editedItem.coupon_id.$touch()"
+                      v-model:trim="$v.editedItem.coupon_id.$model"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="6">
                     <v-text-field
                       v-model="editedItem.percent"
                       label="درصد تخفیف"
+                      :error-messages="percentErrors"
+                      required
+                      @input="$v.editedItem.percent.$touch()"
+                      @blur="$v.editedItem.percent.$touch()"
+                      v-model:trim="$v.editedItem.percent.$model"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="6">
                     <v-text-field
                       v-model="editedItem.max"
                       label="سقف تخفیف"
+                      :error-messages="maxErrors"
+                      required
+                      @input="$v.editedItem.max.$touch()"
+                      @blur="$v.editedItem.max.$touch()"
+                      v-model:trim="$v.editedItem.max.$model"
                     ></v-text-field>
                   </v-col>
 
@@ -53,6 +69,12 @@
                     <v-text-field
                       v-model="editedItem.type"
                       label="نوع کوپن"
+
+                      :error-messages="typeErrors"
+                      required
+                      @input="$v.editedItem.type.$touch()"
+                      @blur="$v.editedItem.type.$touch()"
+                      v-model:trim="$v.editedItem.type.$model"
                     ></v-text-field>
                   </v-col>
 
@@ -62,7 +84,15 @@
                   <v-col cols="12" sm="6" md="6">
                     <client-only>
                       <label>تاریخ شروع</label>
-                      <PersianDatePicker v-model="editedItem.start"/>
+                      <PersianDatePicker
+                        v-model="editedItem.start"
+
+                        :error-messages="startErrors"
+                        required
+                        @input="$v.editedItem.start.$touch()"
+                        @blur="$v.editedItem.start.$touch()"
+                        v-model:trim="$v.editedItem.start.$model"
+                      />
                     </client-only>
                   </v-col>
                   <!--<v-col cols="12" sm="6" md="4">-->
@@ -121,7 +151,15 @@
                   <v-col cols="12" sm="6" md="6">
                     <client-only>
                       <label>تاریخ پایان</label>
-                      <PersianDatePicker v-model="editedItem.end"/>
+                      <PersianDatePicker
+
+                        v-model="editedItem.end"
+                        :error-messages="endErrors"
+                        required
+                        @input="$v.editedItem.end.$touch()"
+                        @blur="$v.editedItem.end.$touch()"
+                        v-model:trim="$v.editedItem.end.$model"
+                      />
                     </client-only>
                   </v-col>
                   
@@ -186,10 +224,26 @@
 </template>
 
 <script>
+  import {validationMixin} from 'vuelidate'
+  import {required} from 'vuelidate/lib/validators'
 export default {
   components: {
     PersianDatePicker: () => import('vue-persian-datetime-picker'),
   },
+
+  mixins: [validationMixin],
+
+  validations: {
+    editedItem: {
+      coupon_id: {required},
+      percent: {required},
+      max: {required},
+      type: {required},
+      start: {required},
+      end: {required},
+    }
+  },
+
   data: () => ({
     startDatePicker: false,
     endDatePicker: false,
@@ -230,6 +284,54 @@ export default {
   }),
 
   computed: {
+    couponIDErrors(){
+      const errors = [];
+      if (!this.$v.editedItem.coupon_id.$dirty) return errors;
+
+      !this.$v.editedItem.coupon_id.required && errors.push('کد کوپن الزامی است');
+      return errors
+    },
+
+    percentErrors(){
+      const errors = [];
+      if (!this.$v.editedItem.percent.$dirty) return errors;
+
+      !this.$v.editedItem.percent.required && errors.push('درصد کوپن الزامی است');
+      return errors
+    },
+
+    maxErrors(){
+      const errors = [];
+      if (!this.$v.editedItem.max.$dirty) return errors;
+
+      !this.$v.editedItem.max.required && errors.push('سقف کوپن الزامی است');
+      return errors
+    },
+
+    typeErrors(){
+      const errors = [];
+      if (!this.$v.editedItem.type.$dirty) return errors;
+
+      !this.$v.editedItem.type.required && errors.push('نوع کوپن الزامی است');
+      return errors
+    },
+
+    startErrors(){
+      const errors = [];
+      if (!this.$v.editedItem.start.$dirty) return errors;
+
+      !this.$v.editedItem.start.required && errors.push('تاریخ شروع الزامی است');
+      return errors
+    },
+    endErrors(){
+      const errors = [];
+      if (!this.$v.editedItem.end.$dirty) return errors;
+
+      !this.$v.editedItem.end.required && errors.push('تاریخ پایان الزامی است');
+      return errors
+    },
+
+
     formTitle() {
       return this.editedIndex === -1 ? "ایجاد" : "ویرایش";
     },

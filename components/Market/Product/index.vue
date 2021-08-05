@@ -33,19 +33,35 @@
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       v-model="editedItem.name"
+                      :error-messages="nameErrors"
+                      :counter="32"
                       label="نام"
+                      required
+                      @input="$v.editedItem.name.$touch()"
+                      @blur="$v.editedItem.name.$touch()"
+                      v-model:trim="$v.editedItem.name.$model"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-file-input
                       v-model="editedItem.image"
+                      :error-messages="imageErrors"
                       label="تصویر"
+                      required
+                      @input="$v.editedItem.image.$touch()"
+                      @blur="$v.editedItem.image.$touch()"
+                      v-model:trim="$v.editedItem.image.$model"
                     ></v-file-input>
                   </v-col>
                   <v-col cols="12" sm="6" md="4">
                     <v-text-field
                       v-model="editedItem.price"
                       label="قیمت"
+                      :error-messages="priceErrors"
+                      required
+                      @input="$v.editedItem.price.$touch()"
+                      @blur="$v.editedItem.price.$touch()"
+                      v-model:trim="$v.editedItem.price.$model"
                     ></v-text-field>
                   </v-col>
 
@@ -53,6 +69,12 @@
                     <v-text-field
                       v-model="editedItem.weight"
                       label="وزن"
+
+                      :error-messages="weightErrors"
+                      required
+                      @input="$v.editedItem.weight.$touch()"
+                      @blur="$v.editedItem.weight.$touch()"
+                      v-model:trim="$v.editedItem.weight.$model"
                     ></v-text-field>
                   </v-col>
 
@@ -61,6 +83,12 @@
                       v-model="editedItem.category"
                       label="دسته"
                       v-bind:items="selectOptions"
+
+                      :error-messages="categoryErrors"
+                      required
+                      @input="$v.editedItem.category.$touch()"
+                      @blur="$v.editedItem.category.$touch()"
+                      v-model:trim="$v.editedItem.category.$model"
                     >
                     </v-select>
                   </v-col>
@@ -70,6 +98,12 @@
                       v-bind:items="selectOptions"
                       v-model="editedItem.property"
                       label="فرم"
+
+                      :error-messages="propertyErrors"
+                      required
+                      @input="$v.editedItem.property.$touch()"
+                      @blur="$v.editedItem.property.$touch()"
+                      v-model:trim="$v.editedItem.property.$model"
                     ></v-select>
                   </v-col>
 
@@ -78,13 +112,13 @@
                     <label>توضیحات</label>
                     <ckeditor v-model="editedItem.description" v-bind:config="ckConfig"/>
                     <!--<v-textarea-->
-                      <!--v-model="editedItem.description"-->
-                      <!--label="توضیحات"-->
-                      <!--auto-grow-->
-                      <!--outlined-->
-                      <!--rows="3"-->
-                      <!--row-height="25"-->
-                      <!--shaped-->
+                    <!--v-model="editedItem.description"-->
+                    <!--label="توضیحات"-->
+                    <!--auto-grow-->
+                    <!--outlined-->
+                    <!--rows="3"-->
+                    <!--row-height="25"-->
+                    <!--shaped-->
                     <!--&gt;</v-textarea>-->
                   </v-col>
 
@@ -197,6 +231,8 @@
 </template>
 
 <script>
+  import {validationMixin} from 'vuelidate'
+  import {required} from 'vuelidate/lib/validators'
 
   let CKEditor;
   if (process.browser) {
@@ -205,184 +241,233 @@
   export default {
     components: {
       ckeditor: process.browser ? CKEditor.component : null,
-  },
-  data: () => ({
-    ckConfig: {
-      language: 'fa',
     },
-    propertyName: "",
-    propertyValue: "",
-    inputs: [],
-    selectOptions: ["Foo", "Bar", "Fizz", "Buzz"],
-    dialog: false,
-    dialogDelete: false,
-    headers: [
-      {text: "#", value: "id"},
-      {text: "نام", value: "name"},
-      {text: "تصویر", value: "image"},
-      {text: "قیمت", value: "price"},
-      {text: "وزن", value: "weight"},
-      {text: "دسته", value: "category"},
-      {text: "فرم", value: "property"},
-      {text: "تنظیمات", value: "actions", sortable: false},
-    ],
-    products: [],
-    editedIndex: -1,
-    editedItem: {
 
-      name: "",
-      image: "",
-      price: "",
-      weight: "",
-      category: "",
-      property: "",
-      description: "",
+    mixins: [validationMixin],
 
-    },
-    defaultItem: {
-      name: "",
-      image: "",
-      price: "",
-      weight: "",
-      category: "",
-      property: "",
-      description: "",
-    },
-  }),
-
-    computed
-  :
-  {
-    formTitle()
-    {
-      return this.editedIndex === -1 ? "ایجاد" : "ویرایش";
-    }
-  ,
-  }
-  ,
-
-  watch: {
-    dialog(val)
-    {
-      val || this.close();
-    }
-  ,
-    dialogDelete(val)
-    {
-      val || this.closeDelete();
-    }
-  ,
-  }
-  ,
-
-  created()
-  {
-    this.addRow();
-    this.initialize();
-  }
-  ,
-
-  methods: {
-
-    deleteRow(index)
-    {
-      this.inputs.splice(index, 1);
-    }
-  ,
-
-    addRow()
-    {
-      this.inputs.push({
-        propertyName: "",
-        propertyValue: "",
-      });
-    }
-  ,
-    initialize()
-    {
-      this.products = [
-        {
-          id: "1",
-          name: "Iphone",
-          image: "https://cdn.vuetifyjs.com/images/john.jpg",
-          price: "200",
-          weight: "1.5",
-          category: "برقی",
-          property: "xx",
-          description: "",
-
-        },
-
-        {
-          id: "2",
-          name: "samsung",
-          image: require("@/static/avatar/man_4.jpg"),
-          price: "500",
-          weight: "5.5",
-          category: "برقی",
-          property: "ssxx",
-          description: "",
-
-        },
-      ];
-    }
-  ,
-
-    editItem(item)
-    {
-      this.editedIndex = this.products.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
-    }
-  ,
-
-    deleteItem(item)
-    {
-      this.editedIndex = this.products.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialogDelete = true;
-    }
-  ,
-
-    deleteItemConfirm()
-    {
-      this.products.splice(this.editedIndex, 1);
-      this.closeDelete();
-    }
-  ,
-
-    close()
-    {
-      this.dialog = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    }
-  ,
-
-    closeDelete()
-    {
-      this.dialogDelete = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    }
-  ,
-
-    save()
-    {
-      if (this.editedIndex > -1) {
-        Object.assign(this.products[this.editedIndex], this.editedItem);
-      } else {
-        this.products.push(this.editedItem);
+    validations: {
+      editedItem: {
+        name: {required},
+        image: {required},
+        price: {required},
+        weight: {required},
+        category: {required},
+        property: {required},
       }
-      this.close();
+    },
+
+
+    data: () => ({
+      ckConfig: {
+        language: 'fa',
+      },
+      propertyName: "",
+      propertyValue: "",
+      inputs: [],
+      selectOptions: ["Foo", "Bar", "Fizz", "Buzz"],
+      dialog: false,
+      dialogDelete: false,
+      headers: [
+        {text: "#", value: "id"},
+        {text: "نام", value: "name"},
+        {text: "تصویر", value: "image"},
+        {text: "قیمت", value: "price"},
+        {text: "وزن", value: "weight"},
+        {text: "دسته", value: "category"},
+        {text: "فرم", value: "property"},
+        {text: "تنظیمات", value: "actions", sortable: false},
+      ],
+      products: [],
+      editedIndex: -1,
+      editedItem: {
+
+        name: "",
+        image: "",
+        price: "",
+        weight: "",
+        category: "",
+        property: "",
+        description: "",
+
+      },
+      defaultItem: {
+        name: "",
+        image: "",
+        price: "",
+        weight: "",
+        category: "",
+        property: "",
+        description: "",
+      },
+    }),
+
+    computed:
+      {
+        nameErrors() {
+          const errors = [];
+          if (!this.$v.editedItem.name.$dirty) return errors;
+
+          !this.$v.editedItem.name.required && errors.push('نام الزامی است');
+          return errors
+        },
+
+        categoryErrors() {
+          const errors = [];
+          if (!this.$v.editedItem.category.$dirty) return errors;
+
+          !this.$v.editedItem.category.required && errors.push(' دسته بندی الزامی است');
+          return errors
+        },
+
+        imageErrors() {
+          const errors = [];
+          if (!this.$v.editedItem.image.$dirty) return errors;
+
+          !this.$v.editedItem.image.required && errors.push('تصویر الزامی است');
+          return errors
+        },
+
+        priceErrors() {
+          const errors = [];
+          if (!this.$v.editedItem.price.$dirty) return errors;
+
+          !this.$v.editedItem.price.required && errors.push('قیمت الزامی است');
+          return errors
+        },
+
+        weightErrors() {
+          const errors = [];
+          if (!this.$v.editedItem.weight.$dirty) return errors;
+
+          !this.$v.editedItem.weight.required && errors.push('وزن الزامی است');
+          return errors
+        },
+
+        propertyErrors() {
+          const errors = [];
+          if (!this.$v.editedItem.property.$dirty) return errors;
+
+          !this.$v.editedItem.property.required && errors.push('ویژگی الزامی است');
+          return errors
+        },
+
+        formTitle() {
+          return this.editedIndex === -1 ? "ایجاد" : "ویرایش";
+        }
+        ,
+      }
+    ,
+
+    watch: {
+      dialog(val) {
+        val || this.close();
+      }
+      ,
+      dialogDelete(val) {
+        val || this.closeDelete();
+      }
+      ,
     }
-  ,
-  }
-  ,
+    ,
+
+    created() {
+      this.addRow();
+      this.initialize();
+    }
+    ,
+
+    methods: {
+
+      deleteRow(index) {
+        this.inputs.splice(index, 1);
+      }
+      ,
+
+      addRow() {
+        this.inputs.push({
+          propertyName: "",
+          propertyValue: "",
+        });
+      }
+      ,
+      initialize() {
+        this.products = [
+          {
+            id: "1",
+            name: "Iphone",
+            image: "https://cdn.vuetifyjs.com/images/john.jpg",
+            price: "200",
+            weight: "1.5",
+            category: "برقی",
+            property: "xx",
+            description: "",
+
+          },
+
+          {
+            id: "2",
+            name: "samsung",
+            image: require("@/static/avatar/man_4.jpg"),
+            price: "500",
+            weight: "5.5",
+            category: "برقی",
+            property: "ssxx",
+            description: "",
+
+          },
+        ];
+      }
+      ,
+
+      editItem(item) {
+        this.editedIndex = this.products.indexOf(item);
+        this.editedItem = Object.assign({}, item);
+        this.dialog = true;
+      }
+      ,
+
+      deleteItem(item) {
+        this.editedIndex = this.products.indexOf(item);
+        this.editedItem = Object.assign({}, item);
+        this.dialogDelete = true;
+      }
+      ,
+
+      deleteItemConfirm() {
+        this.products.splice(this.editedIndex, 1);
+        this.closeDelete();
+      }
+      ,
+
+      close() {
+        this.dialog = false;
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem);
+          this.editedIndex = -1;
+        });
+      }
+      ,
+
+      closeDelete() {
+        this.dialogDelete = false;
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem);
+          this.editedIndex = -1;
+        });
+      }
+      ,
+
+      save() {
+        if (this.editedIndex > -1) {
+          Object.assign(this.products[this.editedIndex], this.editedItem);
+        } else {
+          this.products.push(this.editedItem);
+        }
+        this.close();
+      }
+      ,
+    }
+    ,
   }
   ;
 </script>

@@ -47,33 +47,39 @@
                     <v-text-field
                       v-model="editedItem.title"
                       label="عنوان اطلاعیه"
+                      :error-messages="titleErrors"
+                      :counter="32"
+                      required
+                      @input="$v.editedItem.title.$touch()"
+                      @blur="$v.editedItem.title.$touch()"
+                      v-model:trim="$v.editedItem.title.$model"
                     ></v-text-field>
                   </v-col>
 
 
                   <v-col cols="12" sm="6" md="4">
                     <!--<v-menu-->
-                      <!--v-model="releaseDatePicker"-->
-                      <!--:close-on-content-click="false"-->
-                      <!--:nudge-right="40"-->
-                      <!--transition="scale-transition"-->
-                      <!--offset-y-->
-                      <!--min-width="auto"-->
+                    <!--v-model="releaseDatePicker"-->
+                    <!--:close-on-content-click="false"-->
+                    <!--:nudge-right="40"-->
+                    <!--transition="scale-transition"-->
+                    <!--offset-y-->
+                    <!--min-width="auto"-->
                     <!--&gt;-->
-                      <!--<template v-slot:activator="{ on, attrs }">-->
-                        <!--<v-text-field-->
-                          <!--v-model="editedItem.releaseDate"-->
-                          <!--label="تاریخ ارسال"-->
-                          <!--prepend-icon="mdi-calendar"-->
-                          <!--readonly-->
-                          <!--v-bind="attrs"-->
-                          <!--v-on="on"-->
-                        <!--&gt;</v-text-field>-->
-                      <!--</template>-->
-                      <!--<v-date-picker-->
-                        <!--v-model="editedItem.releaseDate"-->
-                        <!--@input="releaseDatePicker = false"-->
-                      <!--&gt;</v-date-picker>-->
+                    <!--<template v-slot:activator="{ on, attrs }">-->
+                    <!--<v-text-field-->
+                    <!--v-model="editedItem.releaseDate"-->
+                    <!--label="تاریخ ارسال"-->
+                    <!--prepend-icon="mdi-calendar"-->
+                    <!--readonly-->
+                    <!--v-bind="attrs"-->
+                    <!--v-on="on"-->
+                    <!--&gt;</v-text-field>-->
+                    <!--</template>-->
+                    <!--<v-date-picker-->
+                    <!--v-model="editedItem.releaseDate"-->
+                    <!--@input="releaseDatePicker = false"-->
+                    <!--&gt;</v-date-picker>-->
                     <!--</v-menu>-->
                     <client-only>
                       <label>تاریخ انتشار</label>
@@ -84,15 +90,15 @@
                   <v-col cols="12">
 
                     <label>متن ایمیل</label>
-                    <ckeditor  v-model="editedItem.text" v-bind:config="ckConfig" />
+                    <ckeditor v-model="editedItem.text" v-bind:config="ckConfig"/>
                     <!--<v-textarea-->
-                      <!--v-model="editedItem.text"-->
-                      <!--label="توضیحات"-->
-                      <!--auto-grow-->
-                      <!--outlined-->
-                      <!--rows="3"-->
-                      <!--row-height="25"-->
-                      <!--shaped-->
+                    <!--v-model="editedItem.text"-->
+                    <!--label="توضیحات"-->
+                    <!--auto-grow-->
+                    <!--outlined-->
+                    <!--rows="3"-->
+                    <!--row-height="25"-->
+                    <!--shaped-->
                     <!--&gt;</v-textarea>-->
                   </v-col>
 
@@ -170,6 +176,9 @@
 </template>
 
 <script>
+  import {validationMixin} from 'vuelidate'
+  import {required} from 'vuelidate/lib/validators'
+
   let CKEditor;
   if (process.browser) {
     CKEditor = require("ckeditor4-vue")
@@ -178,6 +187,13 @@
     components: {
       ckeditor: process.browser ? CKEditor.component : null,
       PersianDatePicker: () => import('vue-persian-datetime-picker'),
+    },
+    mixins: [validationMixin],
+
+    validations: {
+      editedItem: {
+        title: {required},
+      }
     },
     data: () => ({
 
@@ -189,7 +205,7 @@
       dialogDelete: false,
       headers: [
         {text: "#", value: "id"},
-        {text: 'نام', value: 'title'},
+        {text: 'عنوان', value: 'title'},
         {text: 'تاریخ ارسال', value: 'releaseDate'},
         {text: 'تنظیمات', value: 'actions', sortable: false},
       ],
@@ -210,6 +226,13 @@
     }),
 
     computed: {
+      titleErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.title.$dirty) return errors;
+
+        !this.$v.editedItem.title.required && errors.push('عنوان اطلاعیه الزامی است');
+        return errors
+      },
       formTitle() {
         return this.editedIndex === -1 ? 'ایجاد' : 'ویرایش'
       },

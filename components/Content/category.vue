@@ -46,7 +46,13 @@
                   >
                     <v-text-field
                       v-model="editedItem.name"
+                      :error-messages="nameErrors"
+                      :counter="32"
                       label="نام"
+                      required
+                      @input="$v.editedItem.name.$touch()"
+                      @blur="$v.editedItem.name.$touch()"
+                      v-model:trim="$v.editedItem.name.$model"
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -54,8 +60,17 @@
                     sm="6"
                     md="4"
                   >
-                    <v-select v-model="editedItem.category"
-                              label="دسته بندی"  v-bind:items="selectOptions">
+                    <v-select
+                      v-model="editedItem.category"
+                      label="دسته بندی"
+                      :error-messages="categoryErrors"
+                      required
+                      @change="$v.editedItem.category.$touch()"
+                      @blur="$v.editedItem.category.$touch"
+                      v-bind:items="selectOptions"
+                      v-model:trim="$v.editedItem.category.$model"
+                    >
+
 
                     </v-select>
                   </v-col>
@@ -139,18 +154,28 @@
 </template>
 
 <script>
-  export default {
+  import {validationMixin} from 'vuelidate'
+  import {required} from 'vuelidate/lib/validators'
 
+  export default {
+    mixins: [validationMixin],
+
+    validations: {
+      editedItem: {
+        name: {required},
+        category: {required},
+      }
+    },
     data: () => ({
       selectOptions: ['Foo', 'Bar', 'Fizz', 'Buzz'],
 
       dialog: false,
       dialogDelete: false,
       headers: [
-        { text: "#", value: "id" },
-        { text: 'نام', value: 'name' },
-        { text: 'دسته بندی', value: 'category' },
-        { text: 'تنظیمات', value: 'actions', sortable: false },
+        {text: "#", value: "id"},
+        {text: 'نام', value: 'name'},
+        {text: 'دسته بندی', value: 'category'},
+        {text: 'تنظیمات', value: 'actions', sortable: false},
       ],
       categories: [],
       editedIndex: -1,
@@ -167,26 +192,41 @@
     }),
 
     computed: {
-      formTitle () {
+      nameErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.name.$dirty) return errors;
+
+        !this.$v.editedItem.name.required && errors.push('نام دسته بندی الزامی است');
+        return errors
+      },
+
+      categoryErrors() {
+        const errors = []
+        if (!this.$v.editedItem.category.$dirty) return errors;
+
+        !this.$v.editedItem.category.required && errors.push(' دسته بندی الزامی است');
+        return errors
+      },
+      formTitle() {
         return this.editedIndex === -1 ? 'ایجاد' : 'ویرایش'
       },
     },
 
     watch: {
-      dialog (val) {
+      dialog(val) {
         val || this.close()
       },
-      dialogDelete (val) {
+      dialogDelete(val) {
         val || this.closeDelete()
       },
     },
 
-    created () {
+    created() {
       this.initialize()
     },
 
     methods: {
-      initialize () {
+      initialize() {
         this.categories = [
           {
             id: "1",
@@ -196,24 +236,24 @@
         ]
       },
 
-      editItem (item) {
+      editItem(item) {
         this.editedIndex = this.categories.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
 
-      deleteItem (item) {
+      deleteItem(item) {
         this.editedIndex = this.categories.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialogDelete = true
       },
 
-      deleteItemConfirm () {
+      deleteItemConfirm() {
         this.categories.splice(this.editedIndex, 1)
         this.closeDelete()
       },
 
-      close () {
+      close() {
         this.dialog = false
         this.$nextTick(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
@@ -221,7 +261,7 @@
         })
       },
 
-      closeDelete () {
+      closeDelete() {
         this.dialogDelete = false
         this.$nextTick(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
@@ -229,7 +269,7 @@
         })
       },
 
-      save () {
+      save() {
         if (this.editedIndex > -1) {
           Object.assign(this.categories[this.editedIndex], this.editedItem)
         } else {

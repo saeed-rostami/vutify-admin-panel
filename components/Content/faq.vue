@@ -28,15 +28,21 @@
                     <v-text-field
                       v-model="editedItem.question"
                       label="پرسش"
+                      :error-messages="questionErrors"
+                      :counter="32"
+                      required
+                      @input="$v.editedItem.question.$touch()"
+                      @blur="$v.editedItem.question.$touch()"
+                      v-model:trim="$v.editedItem.question.$model"
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="12" md="12">
                     <label>پاسخ</label>
-                    <ckeditor v-model="editedItem.answer" v-bind:config="ckConfig" />
+                    <ckeditor v-model="editedItem.answer" v-bind:config="ckConfig"/>
                     <!--<v-text-field v-model="editedItem.answer"-->
-                                  <!--label="خلاصه پاسخ" v-bind:items="selectOptions">-->
+                    <!--label="خلاصه پاسخ" v-bind:items="selectOptions">-->
 
-                      <!--&gt;-->
+                    <!--&gt;-->
                     <!--</v-text-field>-->
                   </v-col>
 
@@ -110,11 +116,21 @@
 </template>
 
 <script>
+  import {validationMixin} from 'vuelidate'
+  import {required} from 'vuelidate/lib/validators'
+
   let CKEditor;
   if (process.browser) {
     CKEditor = require("ckeditor4-vue")
   }
   export default {
+    mixins: [validationMixin],
+
+    validations: {
+      editedItem: {
+        question: {required},
+      }
+    },
     components: {
       ckeditor: process.browser ? CKEditor.component : null,
     },
@@ -141,12 +157,17 @@
       },
       defaultItem: {
         question: "",
-        answer: "",
-
       },
     }),
 
     computed: {
+      questionErrors() {
+        const errors = []
+        if (!this.$v.editedItem.question.$dirty) return errors;
+
+        !this.$v.editedItem.question.required && errors.push(' پرسش الزامی است');
+        return errors
+      },
       formTitle() {
         return this.editedIndex === -1 ? "ایجاد" : "ویرایش";
       },

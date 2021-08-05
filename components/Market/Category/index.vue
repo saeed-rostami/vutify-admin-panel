@@ -28,7 +28,7 @@
               v-bind="attrs"
               v-on="on"
             >
-             ایجاد
+              ایجاد
             </v-btn>
           </template>
           <v-card>
@@ -46,7 +46,13 @@
                   >
                     <v-text-field
                       v-model="editedItem.name"
+                      :error-messages="nameErrors"
+                      :counter="32"
                       label="نام"
+                      required
+                      @input="$v.editedItem.name.$touch()"
+                      @blur="$v.editedItem.name.$touch()"
+                      v-model:trim="$v.editedItem.name.$model"
                     ></v-text-field>
                   </v-col>
                   <v-col
@@ -54,17 +60,19 @@
                     sm="6"
                     md="4"
                   >
-                   <v-select v-model="editedItem.category"
-                      label="دسته بندی"  v-bind:items="selectOptions">
-                   
-                      </v-select>
-                  </v-col>
-                  <v-col
-                    cols="12"
-                    sm="6"
-                    md="4"
-                  >
-                   
+                    <v-select
+                      v-model="editedItem.category"
+                      :error-messages="categoryErrors"
+                      required
+                      @change="$v.editedItem.category.$touch()"
+                      @blur="$v.editedItem.category.$touch"
+                      label="دسته بندی"
+                      v-bind:items="selectOptions"
+                      v-model:trim="$v.editedItem.category.$model"
+
+                    >
+
+                    </v-select>
                   </v-col>
                 </v-row>
               </v-container>
@@ -103,30 +111,33 @@
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
-       <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon
-            v-bind="attrs"
-            v-on="on"
-            small
-            class="mr-2"
-            @click="editItem(item)"
-          >
-            mdi-pencil
-          </v-icon>
-        </template>
-        <span>ویرایش</span>
-      </v-tooltip>
 
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon v-bind="attrs" v-on="on" small @click="deleteItem(item)">
-            mdi-delete
-          </v-icon>
-        </template>
-        <span>حذف</span>
-      </v-tooltip>
+      <ActionIcon
+        v-bind:icon="`mdi-pencil`"
+        v-bind:tooltip="`ویرایش`"
+        v-bind:item="item"
+        v-on:click="editItem(item)"
+      />
+
+      <ActionIcon
+        v-bind:icon="`mdi-delete`"
+        v-bind:tooltip="`حذف`"
+        v-bind:item="item"
+        v-on:click="deleteItem(item)"
+      />
+
+
+      <!--<v-tooltip bottom>-->
+      <!--<template v-slot:activator="{ on, attrs }">-->
+      <!--<v-icon v-bind="attrs" v-on="on" small @click="deleteItem(item)">-->
+      <!--mdi-delete-->
+      <!--</v-icon>-->
+      <!--</template>-->
+      <!--<span>حذف</span>-->
+      <!--</v-tooltip>-->
+
     </template>
+
     <template v-slot:no-data>
       <v-btn
         color="primary"
@@ -139,54 +150,84 @@
 </template>
 
 <script>
-  export default {
+  import {validationMixin} from 'vuelidate'
+  import {required} from 'vuelidate/lib/validators'
+  import ActionIcon from "../../AppBarComponents/ActionIcon";
 
+
+  export default {
+    components: {ActionIcon},
+    mixins: [validationMixin],
+
+
+    validations: {
+      editedItem: {
+        name: {required},
+        category: {required},
+      }
+    },
     data: () => ({
-     selectOptions: ['Foo', 'Bar', 'Fizz', 'Buzz'],
+      selectOptions: ['Foo', 'Bar', 'Fizz', 'Buzz'],
 
       dialog: false,
       dialogDelete: false,
       headers: [
-          { text: "#", value: "id" },
-        { text: 'نام', value: 'name' },
-        { text: 'دسته بندی', value: 'category' },
-        { text: 'تنظیمات', value: 'actions', sortable: false },
+        {text: "#", value: "id"},
+        {text: 'نام', value: 'name'},
+        {text: 'دسته بندی', value: 'category'},
+        {text: 'تنظیمات', value: 'actions', sortable: false},
       ],
       categories: [],
       editedIndex: -1,
       editedItem: {
         name: '',
         category: '',
-    
+
       },
       defaultItem: {
         name: '',
         category: '',
-    
+
       },
     }),
 
     computed: {
-      formTitle () {
+      nameErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.name.$dirty) return errors;
+
+        !this.$v.editedItem.name.required && errors.push('نام دسته بندی الزامی است');
+        return errors
+      },
+
+      categoryErrors() {
+        const errors = []
+        if (!this.$v.editedItem.category.$dirty) return errors;
+
+        !this.$v.editedItem.category.required && errors.push(' دسته بندی الزامی است');
+        return errors
+      },
+      formTitle() {
         return this.editedIndex === -1 ? 'ایجاد' : 'ویرایش'
       },
     },
 
     watch: {
-      dialog (val) {
+
+      dialog(val) {
         val || this.close()
       },
-      dialogDelete (val) {
+      dialogDelete(val) {
         val || this.closeDelete()
       },
     },
 
-    created () {
+    created() {
       this.initialize()
     },
 
     methods: {
-      initialize () {
+      initialize() {
         this.categories = [
           {
             id: "1",
@@ -196,40 +237,43 @@
         ]
       },
 
-      editItem (item) {
-        this.editedIndex = this.categories.indexOf(item)
-        this.editedItem = Object.assign({}, item)
+      editItem(item) {
+        console.log('edit', item);
+        this.editedIndex = this.categories.indexOf(item);
+        this.editedItem = Object.assign({}, item);
         this.dialog = true
       },
 
-      deleteItem (item) {
-        this.editedIndex = this.categories.indexOf(item)
-        this.editedItem = Object.assign({}, item)
+      deleteItem(item) {
+        console.log('delete', item);
+        this.editedIndex = this.categories.indexOf(item);
+        this.editedItem = Object.assign({}, item);
         this.dialogDelete = true
       },
 
-      deleteItemConfirm () {
-        this.categories.splice(this.editedIndex, 1)
+      deleteItemConfirm() {
+        this.categories.splice(this.editedIndex, 1);
         this.closeDelete()
       },
 
-      close () {
-        this.dialog = false
+      close() {
+        this.dialog = false;
         this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedItem = Object.assign({}, this.defaultItem);
           this.editedIndex = -1
         })
       },
 
-      closeDelete () {
-        this.dialogDelete = false
+      closeDelete() {
+        this.dialogDelete = false;
         this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
+          this.editedItem = Object.assign({}, this.defaultItem);
           this.editedIndex = -1
         })
       },
 
-      save () {
+      save() {
+        this.$v.$touch();
         if (this.editedIndex > -1) {
           Object.assign(this.categories[this.editedIndex], this.editedItem)
         } else {

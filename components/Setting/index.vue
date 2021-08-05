@@ -48,6 +48,12 @@
                     <v-text-field
                       v-model="editedItem.name"
                       label="نام"
+                      :error-messages="nameErrors"
+                      :counter="32"
+                      required
+                      @input="$v.editedItem.name.$touch()"
+                      @blur="$v.editedItem.name.$touch()"
+                      v-model:trim="$v.editedItem.name.$model"
                     ></v-text-field>
                   </v-col>
 
@@ -59,9 +65,15 @@
                     <v-text-field
                       v-model="editedItem.value"
                       label="مقدار"
+
+                      :error-messages="valueErrors"
+                      :counter="32"
+                      required
+                      @input="$v.editedItem.value.$touch()"
+                      @blur="$v.editedItem.value.$touch()"
+                      v-model:trim="$v.editedItem.value.$model"
                     ></v-text-field>
                   </v-col>
-
 
 
                 </v-row>
@@ -137,17 +149,27 @@
 </template>
 
 <script>
-  export default {
+  import {validationMixin} from 'vuelidate'
+  import {required} from 'vuelidate/lib/validators'
 
+  export default {
+    mixins: [validationMixin],
+
+    validations: {
+      editedItem: {
+        name: {required},
+        value: {required},
+      }
+    },
     data: () => ({
       releaseDatePicker: false,
       dialog: false,
       dialogDelete: false,
       headers: [
-        { text: "#", value: "id" },
-        { text: 'نام', value: 'name' },
-        { text: 'مقدار', value: 'value' },
-        { text: 'تنظیمات', value: 'actions', sortable: false },
+        {text: "#", value: "id"},
+        {text: 'نام', value: 'name'},
+        {text: 'مقدار', value: 'value'},
+        {text: 'تنظیمات', value: 'actions', sortable: false},
       ],
       settings: [],
       editedIndex: -1,
@@ -164,26 +186,41 @@
     }),
 
     computed: {
-      formTitle () {
+      nameErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.name.$dirty) return errors;
+
+        !this.$v.editedItem.name.required && errors.push('نام الزامی است');
+        return errors
+      },
+
+      valueErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.value.$dirty) return errors;
+
+        !this.$v.editedItem.value.required && errors.push('مقدار الزامی است');
+        return errors
+      },
+      formTitle() {
         return this.editedIndex === -1 ? 'ایجاد' : 'ویرایش'
       },
     },
 
     watch: {
-      dialog (val) {
+      dialog(val) {
         val || this.close()
       },
-      dialogDelete (val) {
+      dialogDelete(val) {
         val || this.closeDelete()
       },
     },
 
-    created () {
+    created() {
       this.initialize()
     },
 
     methods: {
-      initialize () {
+      initialize() {
         this.settings = [
           {
             id: "1",
@@ -194,24 +231,24 @@
         ]
       },
 
-      editItem (item) {
+      editItem(item) {
         this.editedIndex = this.settings.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialog = true
       },
 
-      deleteItem (item) {
+      deleteItem(item) {
         this.editedIndex = this.settings.indexOf(item)
         this.editedItem = Object.assign({}, item)
         this.dialogDelete = true
       },
 
-      deleteItemConfirm () {
+      deleteItemConfirm() {
         this.settings.splice(this.editedIndex, 1)
         this.closeDelete()
       },
 
-      close () {
+      close() {
         this.dialog = false
         this.$nextTick(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
@@ -219,7 +256,7 @@
         })
       },
 
-      closeDelete () {
+      closeDelete() {
         this.dialogDelete = false
         this.$nextTick(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
@@ -227,7 +264,7 @@
         })
       },
 
-      save () {
+      save() {
         if (this.editedIndex > -1) {
           Object.assign(this.settings[this.editedIndex], this.editedItem)
         } else {

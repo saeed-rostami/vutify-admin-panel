@@ -54,7 +54,13 @@
                   >
                     <v-text-field
                       v-model="editedItem.name"
+                      :error-messages="nameErrors"
+                      :counter="32"
                       label="نام"
+                      required
+                      @input="$v.editedItem.name.$touch()"
+                      @blur="$v.editedItem.name.$touch()"
+                      v-model:trim="$v.editedItem.name.$model"
                     ></v-text-field>
                   </v-col>
 
@@ -63,8 +69,17 @@
                     sm="6"
                     md="6"
                   >
-                    <v-select v-model="editedItem.category"
-                              label="دسته بندی" v-bind:items="selectOptions">
+                    <v-select
+                      v-model="editedItem.category"
+                      :error-messages="categoryErrors"
+                      required
+                      @change="$v.editedItem.category.$touch()"
+                      @blur="$v.editedItem.category.$touch"
+                      label="دسته بندی"
+                      v-bind:items="selectOptions"
+                      v-model:trim="$v.editedItem.category.$model"
+
+                    >
 
                     </v-select>
                   </v-col>
@@ -105,7 +120,12 @@
                   <v-col cols="12" sm="6" md="6">
                     <v-file-input
                       v-model="editedItem.image"
+                      :error-messages="imageErrors"
                       label="تصویر"
+                      required
+                      @input="$v.editedItem.image.$touch()"
+                      @blur="$v.editedItem.image.$touch()"
+                      v-model:trim="$v.editedItem.image.$model"
                     ></v-file-input>
                   </v-col>
 
@@ -200,13 +220,23 @@
 </template>
 
 <script>
-
+  import {validationMixin} from 'vuelidate'
+  import {required} from 'vuelidate/lib/validators'
   let CKEditor;
   if (process.browser) {
     CKEditor = require("ckeditor4-vue")
   }
 
   export default {
+    mixins: [validationMixin],
+
+    validations: {
+      editedItem: {
+        name: {required},
+        category: {required},
+        image: {required},
+      }
+    },
     components: {
       PersianDatePicker: () => import('vue-persian-datetime-picker'),
       ckeditor: process.browser ? CKEditor.component : null,
@@ -247,6 +277,28 @@
     }),
 
     computed: {
+      nameErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.name.$dirty) return errors;
+
+        !this.$v.editedItem.name.required && errors.push('نام دسته بندی الزامی است');
+        return errors
+      },
+
+      categoryErrors() {
+        const errors = []
+        if (!this.$v.editedItem.category.$dirty) return errors;
+
+        !this.$v.editedItem.category.required && errors.push(' دسته بندی الزامی است');
+        return errors
+      },
+      imageErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.image.$dirty) return errors;
+
+        !this.$v.editedItem.image.required && errors.push('تصویر الزامی است');
+        return errors
+      },
       formTitle() {
         return this.editedIndex === -1 ? 'ایجاد' : 'ویرایش'
       },

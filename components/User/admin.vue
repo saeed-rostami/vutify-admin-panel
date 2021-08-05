@@ -33,7 +33,13 @@
                   >
                     <v-text-field
                       v-model="editedItem.name"
+                      :error-messages="nameErrors"
+                      :counter="32"
                       label="نام"
+                      required
+                      @input="$v.editedItem.name.$touch()"
+                      @blur="$v.editedItem.name.$touch()"
+                      v-model:trim="$v.editedItem.name.$model"
                     ></v-text-field>
                   </v-col>
 
@@ -45,6 +51,12 @@
                     <v-text-field
                       v-model="editedItem.family"
                       label="نام خانوادگی"
+                      :error-messages="familyErrors"
+                      :counter="32"
+                      required
+                      @input="$v.editedItem.family.$touch()"
+                      @blur="$v.editedItem.family.$touch()"
+                      v-model:trim="$v.editedItem.family.$model"
                     ></v-text-field>
                   </v-col>
 
@@ -57,6 +69,12 @@
                     <v-text-field
                       v-model="editedItem.phone"
                       label="موبایل"
+                      :error-messages="phoneErrors"
+                      :counter="11"
+                      required
+                      @input="$v.editedItem.phone.$touch()"
+                      @blur="$v.editedItem.phone.$touch()"
+                      v-model:trim="$v.editedItem.phone.$model"
                     ></v-text-field>
                   </v-col>
 
@@ -68,6 +86,11 @@
                     <v-text-field
                       v-model="editedItem.email"
                       label="ایمیل"
+                      :error-messages="emailErrors"
+                      required
+                      @input="$v.editedItem.email.$touch()"
+                      @blur="$v.editedItem.email.$touch()"
+                      v-model:trim="$v.editedItem.email.$model"
                     ></v-text-field>
                   </v-col>
 
@@ -80,6 +103,11 @@
                     <v-text-field
                       v-model="editedItem.password"
                       label="رمز عبور"
+                      :error-messages="passwordErrors"
+                      required
+                      @input="$v.editedItem.password.$touch()"
+                      @blur="$v.editedItem.password.$touch()"
+                      v-model:trim="$v.editedItem.password.$model"
                     ></v-text-field>
                   </v-col>
 
@@ -91,6 +119,11 @@
                     <v-text-field
                       v-model="editedItem.c_password"
                       label=" تکرار رمز عبور"
+                      :error-messages="c_passwordErrors"
+                      required
+                      @input="$v.editedItem.c_password.$touch()"
+                      @blur="$v.editedItem.c_password.$touch()"
+                      v-model:trim="$v.editedItem.c_password.$model"
                     ></v-text-field>
                   </v-col>
 
@@ -100,7 +133,13 @@
                     md="6"
                   >
                     <v-select v-model="editedItem.status"
-                              label="وضعیت"  v-bind:items="statusOptions">
+                              label="وضعیت"  v-bind:items="statusOptions"
+                              :error-messages="statusErrors"
+                              required
+                              @input="$v.editedItem.status.$touch()"
+                              @blur="$v.editedItem.status.$touch()"
+                              v-model:trim="$v.editedItem.status.$model"
+                    >
                     </v-select>
                   </v-col>
 
@@ -208,8 +247,24 @@
 </template>
 
 <script>
+  import {validationMixin} from 'vuelidate'
+  import {required, email , sameAs, minLength , numeric, maxLength} from 'vuelidate/lib/validators'
   export default {
+    mixins: [validationMixin],
+
+    validations: {
+      editedItem: {
+        name: {required},
+        family: {required},
+        phone: {required , numeric, maxLength: maxLength(11), minLength: minLength(11)},
+        status: {required},
+        email: {required , email},
+        password: {required,  minLength: minLength(6)},
+        c_password: {required , sameAsPassword: sameAs('password')},
+      }
+    },
     data: () => ({
+
       statusOptions: ['active' , 'deactive'],
       dialog: false,
       dialogDelete: false,
@@ -248,6 +303,69 @@
     }),
 
     computed: {
+      nameErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.name.$dirty) return errors;
+
+        !this.$v.editedItem.name.required && errors.push('نام الزامی است');
+        return errors
+      },
+
+      familyErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.family.$dirty) return errors;
+
+        !this.$v.editedItem.family.required && errors.push('نام خانوادگی الزامی است');
+        return errors
+      },
+
+      emailErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.email.$dirty) return errors;
+
+        !this.$v.editedItem.email.required && errors.push('ایمیل الزامی است');
+        !this.$v.editedItem.email.email && errors.push('ایمیل نا معتبر است');
+        return errors
+      },
+      phoneErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.phone.$dirty) return errors;
+
+        !this.$v.editedItem.phone.required && errors.push('موبایل الزامی است');
+        !this.$v.editedItem.phone.numeric && errors.push('کارکتر غیر مجاز است');
+        !this.$v.editedItem.phone.maxLength && errors.push('شماره موبایل باید 11 رقم باشد');
+        !this.$v.editedItem.phone.minLength && errors.push('شماره موبایل باید 11 رقم باشد');
+        return errors
+      },
+
+
+      passwordErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.password.$dirty) return errors;
+
+        !this.$v.editedItem.password.required && errors.push('رمز عبور الزامی است');
+        !this.$v.editedItem.password.minLength && errors.push('رمز عبور باید بالای 6 کارکتر باشد');
+        return errors
+      },
+
+      c_passwordErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.c_password.$dirty) return errors;
+
+        !this.$v.editedItem.c_password.required && errors.push('تکرار رمز عبور الزامی است');
+        !this.$v.editedItem.c_password.sameAsPassword && errors.push('تکرار رمز عبور با رمز عبور مغایرت دارد');
+        return errors
+      },
+
+      statusErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.status.$dirty) return errors;
+
+        !this.$v.editedItem.status.required && errors.push('وضعیت الزامی است');
+        return errors
+      },
+
+
       formTitle() {
         return this.editedIndex === -1 ? "ایجاد" : "ویرایش";
       },

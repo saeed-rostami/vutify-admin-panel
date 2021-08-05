@@ -42,6 +42,12 @@
                     <v-text-field
                       v-model="editedItem.name"
                       label="نام نقش"
+                      :error-messages="nameErrors"
+                      :counter="32"
+                      required
+                      @input="$v.editedItem.name.$touch()"
+                      @blur="$v.editedItem.name.$touch()"
+                      v-model:trim="$v.editedItem.name.$model"
                     ></v-text-field>
                   </v-col>
 
@@ -53,6 +59,11 @@
                     <v-text-field
                       v-model="editedItem.description"
                       label="توضیح"
+                      :error-messages="descriptionErrors"
+                      required
+                      @input="$v.editedItem.description.$touch()"
+                      @blur="$v.editedItem.description.$touch()"
+                      v-model:trim="$v.editedItem.description.$model"
                     ></v-text-field>
                   </v-col>
 
@@ -165,7 +176,17 @@
 </template>
 
 <script>
+  import {validationMixin} from 'vuelidate'
+  import {required} from 'vuelidate/lib/validators'
   export default {
+    mixins: [validationMixin],
+
+    validations: {
+      editedItem: {
+        name: {required},
+        description: {required},
+      }
+    },
     data: () => ({
       name: "permission",
       dialog: false,
@@ -192,6 +213,21 @@
     }),
 
     computed: {
+      nameErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.name.$dirty) return errors;
+
+        !this.$v.editedItem.name.required && errors.push('نام الزامی است');
+        return errors
+      },
+
+      descriptionErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.description.$dirty) return errors;
+
+        !this.$v.editedItem.name.description && errors.push('توضیحات الزامی است');
+        return errors
+      },
       formTitle() {
         return this.editedIndex === -1 ? "ایجاد" : "ویرایش";
       },
