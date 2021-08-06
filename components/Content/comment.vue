@@ -8,7 +8,7 @@
 
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>نظرات </v-toolbar-title>
+        <v-toolbar-title>نظرات</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
@@ -17,18 +17,20 @@
               ایجاد
             </v-btn>
           </template>
-       
+
         </v-dialog>
         <v-dialog v-model="dialogDelete" max-width="500px">
           <v-card>
             <v-card-title class="text-h5"
-              >آیا از حذف این آیتم اطمینان دارید؟</v-card-title
+            >آیا از حذف این آیتم اطمینان دارید؟
+            </v-card-title
             >
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="closeDelete">لغو</v-btn>
               <v-btn color="blue darken-1" text @click="deleteItemConfirm"
-                >بله</v-btn
+              >بله
+              </v-btn
               >
               <v-spacer></v-spacer>
             </v-card-actions>
@@ -37,165 +39,151 @@
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon
-            v-bind="attrs"
-            v-on="on"
-            small
-            class="mr-2"
-            @click="editItem(item)"
-          >
-            mdi-eye
-          </v-icon>
-        </template>
-        <span>نمایش</span>
-      </v-tooltip>
+      <ActionIcon
+        v-bind:icon="` mdi-eye`"
+        v-bind:tooltip="`نمایش`"
+        v-bind:item="item"
+        v-on:click="showComment(item)"
+      />
 
-       <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon
-            v-bind="attrs"
-            v-on="on"
-            small
-            class="mr-2"
-            @click="editItem(item)"
-          >
-            mdi-check-outline
-          </v-icon>
-        </template>
-        <span>تایید</span>
-      </v-tooltip>
+      <ActionIcon
+        v-bind:icon="`mdi-check-outline`"
+        v-bind:tooltip="`تایید`"
+        v-bind:item="item"
+        v-on:click="confirmComment(item)"
+      />
 
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon v-bind="attrs" v-on="on" small @click="deleteItem(item)">
-            mdi-close
-          </v-icon>
-        </template>
-        <span>عدم تایید</span>
-      </v-tooltip>
 
-    
+      <ActionIcon
+        v-bind:icon="` mdi-close`"
+        v-bind:tooltip="`عدم تایید`"
+        v-bind:item="item"
+        v-on:click="rejectComment(item)"
+      />
+
+
     </template>
 
     <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize"> Reset </v-btn>
+      <v-btn color="primary" @click="initialize"> Reset</v-btn>
     </template>
   </v-data-table>
 </template>
 
 <script>
-export default {
-  data: () => ({
-    dialog: false,
-    dialogDelete: false,
-    headers: [
-        { text: "#", value: "id" },
-      { text: "شناسه کاربر", value: "user_id" },
-      { text: "نام کاربر", value: "user_name" },
-      { text: "شناسه کالا", value: "product_id" },
-      { text: "نام کالا", value: "product_name" },
-      { text: "وضعیت", value: "status" },
-      { text: "تنظیمات", value: "actions", sortable: false },
-    ],
-    comments: [],
-    editedIndex: -1,
-    editedItem: {
-      user_id: "",
-      user_name: "",
-      product_id: "",
-      product_name: "",
-      status: "",
-    },
-    defaultItem: {
-     user_id: "",
-      user_name: "",
-      product_id: "",
-      product_name: "",
-      status: "",
-    },
-  }),
+  import ActionIcon from "../AppBarComponents/ActionIcon";
 
-  computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? "ایجاد" : "ویرایش";
-    },
-  },
+  export default {
+    components: {ActionIcon},
+    data: () => ({
+      dialog: false,
+      dialogDelete: false,
+      headers: [
+        {text: "#", value: "id"},
+        {text: "شناسه کاربر", value: "user_id"},
+        {text: "نام کاربر", value: "user_name"},
+        {text: "شناسه کالا", value: "product_id"},
+        {text: "نام کالا", value: "product_name"},
+        {text: "وضعیت", value: "status"},
+        {text: "تنظیمات", value: "actions", sortable: false},
+      ],
+      comments: [],
+      editedIndex: -1,
+      editedItem: {
+        user_id: "",
+        user_name: "",
+        product_id: "",
+        product_name: "",
+        status: "",
+      },
+      defaultItem: {
+        user_id: "",
+        user_name: "",
+        product_id: "",
+        product_name: "",
+        status: "",
+      },
+    }),
 
-  watch: {
-    dialog(val) {
-      val || this.close();
-    },
-    dialogDelete(val) {
-      val || this.closeDelete();
-    },
-  },
-
-  created() {
-    this.initialize();
-  },
-
-  methods: {
-    initialize() {
-      this.comments = [
-        {
-          id: "1",
-          user_id: "65",
-          user_name: "saeed",
-          product_id: "200",
-          product_name: "Iphone",
-          status: "confirmed",
-  
-        },
-
-      
-      ];
+    computed: {
+      formTitle() {
+        return this.editedIndex === -1 ? "ایجاد" : "ویرایش";
+      },
     },
 
-    editItem(item) {
-      this.editedIndex = this.comments.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
+    watch: {
+      dialog(val) {
+        val || this.close();
+      },
+      dialogDelete(val) {
+        val || this.closeDelete();
+      },
     },
 
-    deleteItem(item) {
-      this.editedIndex = this.comments.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialogDelete = true;
+    created() {
+      this.initialize();
     },
 
-    deleteItemConfirm() {
-      this.comments.splice(this.editedIndex, 1);
-      this.closeDelete();
-    },
+    methods: {
+      initialize() {
+        this.comments = [
+          {
+            id: "1",
+            user_id: "65",
+            user_name: "saeed",
+            product_id: "200",
+            product_name: "Iphone",
+            status: "confirmed",
 
-    close() {
-      this.dialog = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
+          },
 
-    closeDelete() {
-      this.dialogDelete = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
 
-    save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.comments[this.editedIndex], this.editedItem);
-      } else {
-        this.comments.push(this.editedItem);
-      }
-      this.close();
+        ];
+      },
+
+      editItem(item) {
+        this.editedIndex = this.comments.indexOf(item);
+        this.editedItem = Object.assign({}, item);
+        this.dialog = true;
+      },
+
+      deleteItem(item) {
+        this.editedIndex = this.comments.indexOf(item);
+        this.editedItem = Object.assign({}, item);
+        this.dialogDelete = true;
+      },
+
+      deleteItemConfirm() {
+        this.comments.splice(this.editedIndex, 1);
+        this.closeDelete();
+      },
+
+      close() {
+        this.dialog = false;
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem);
+          this.editedIndex = -1;
+        });
+      },
+
+      closeDelete() {
+        this.dialogDelete = false;
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem);
+          this.editedIndex = -1;
+        });
+      },
+
+      save() {
+        if (this.editedIndex > -1) {
+          Object.assign(this.comments[this.editedIndex], this.editedItem);
+        } else {
+          this.comments.push(this.editedItem);
+        }
+        this.close();
+      },
     },
-  },
-};
+  };
 </script>
 
 <style scoped>

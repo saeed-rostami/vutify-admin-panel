@@ -37,12 +37,10 @@
         {
           text: "محتوا",
           disabled: false,
-          href: "admin/content",
         },
         {
           text: "پست ها",
           disabled: true,
-          href: "/",
         },
       ],
     }),

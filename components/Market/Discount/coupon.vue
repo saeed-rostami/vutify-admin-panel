@@ -192,29 +192,20 @@
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon
-            v-bind="attrs"
-            v-on="on"
-            small
-            class="mr-2"
-            @click="editItem(item)"
-          >
-            mdi-pencil
-          </v-icon>
-        </template>
-        <span>ویرایش</span>
-      </v-tooltip>
+      <ActionIcon
+        v-bind:icon="` mdi-eye`"
+        v-bind:tooltip="`نمایش`"
+        v-bind:item="item"
+        v-on:click="showComment(item)"
+      />
 
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon v-bind="attrs" v-on="on" small @click="deleteItem(item)">
-            mdi-delete
-          </v-icon>
-        </template>
-        <span>حذف</span>
-      </v-tooltip>
+
+      <ActionIcon
+        v-bind:icon="`mdi-check-outline`"
+        v-bind:tooltip="`تایید`"
+        v-bind:item="item"
+        v-on:click="confirmComment(item)"
+      />
     </template>
 
     <template v-slot:no-data>
@@ -226,8 +217,10 @@
 <script>
   import {validationMixin} from 'vuelidate'
   import {required} from 'vuelidate/lib/validators'
+  import ActionIcon from "../../AppBarComponents/ActionIcon";
 export default {
   components: {
+    ActionIcon,
     PersianDatePicker: () => import('vue-persian-datetime-picker'),
   },
 

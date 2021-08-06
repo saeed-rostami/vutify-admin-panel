@@ -60,38 +60,28 @@
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon
-            v-bind="attrs"
-            v-on="on"
-            small
-            class="mr-2"
-            @click="editItem(item)"
-          >
-            mdi-eye
-          </v-icon>
-        </template>
-        <span>مشاهده</span>
-      </v-tooltip>
+      <ActionIcon
+        v-bind:icon="` mdi-eye`"
+        v-bind:tooltip="`نمایش`"
+        v-bind:item="item"
+        v-on:click="showComment(item)"
+      />
 
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon v-bind="attrs" v-on="on" small @click="deleteItem(item)">
-            mdi-cancel
-          </v-icon>
-        </template>
-        <span>باطل کردن</span>
-      </v-tooltip>
+      <ActionIcon
+        v-bind:icon="`mdi-cancel`"
+        v-bind:tooltip="`باطل کردن`"
+        v-bind:item="item"
+        v-on:click="cancelPayment(item)"
+      />
 
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon v-bind="attrs" v-on="on" small @click="deleteItem(item)">
-           mdi-arrow-left
-          </v-icon>
-        </template>
-        <span>برگرداندن</span>
-      </v-tooltip>
+
+      <ActionIcon
+        v-bind:icon="` mdi-arrow-left`"
+        v-bind:tooltip="`برگرداندن`"
+        v-bind:item="item"
+        v-on:click="rejectPayment(item)"
+      />
+
     </template>
     <template v-slot:no-data>
       <v-btn color="primary" @click="initialize"> Reset </v-btn>
@@ -100,7 +90,9 @@
 </template>
 
 <script>
+import ActionIcon from "../../AppBarComponents/ActionIcon";
 export default {
+  components: {ActionIcon},
   data: () => ({
    
 

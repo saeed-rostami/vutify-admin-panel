@@ -24,7 +24,9 @@
 </template>
 
 <script>
-export default {
+  import index from '@/components/Market/Order/index.vue';
+
+  export default {
   components: { index },
   data: () => ({
     items: [

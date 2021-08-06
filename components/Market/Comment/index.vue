@@ -37,44 +37,29 @@
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon
-            v-bind="attrs"
-            v-on="on"
-            small
-            class="mr-2"
-            @click="editItem(item)"
-          >
-            mdi-eye
-          </v-icon>
-        </template>
-        <span>نمایش</span>
-      </v-tooltip>
 
-       <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon
-            v-bind="attrs"
-            v-on="on"
-            small
-            class="mr-2"
-            @click="editItem(item)"
-          >
-            mdi-check-outline
-          </v-icon>
-        </template>
-        <span>تایید</span>
-      </v-tooltip>
+      <ActionIcon
+        v-bind:icon="` mdi-eye`"
+        v-bind:tooltip="`نمایش`"
+        v-bind:item="item"
+        v-on:click="showComment(item)"
+      />
 
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon v-bind="attrs" v-on="on" small @click="deleteItem(item)">
-            mdi-close
-          </v-icon>
-        </template>
-        <span>عدم تایید</span>
-      </v-tooltip>
+      <ActionIcon
+        v-bind:icon="`mdi-check-outline`"
+        v-bind:tooltip="`تایید`"
+        v-bind:item="item"
+        v-on:click="confirmComment(item)"
+      />
+
+
+      <ActionIcon
+        v-bind:icon="` mdi-close`"
+        v-bind:tooltip="`عدم تایید`"
+        v-bind:item="item"
+        v-on:click="rejectComment(item)"
+      />
+
 
     
     </template>
@@ -86,7 +71,9 @@
 </template>
 
 <script>
+import ActionIcon from "../../AppBarComponents/ActionIcon";
 export default {
+  components: {ActionIcon},
   data: () => ({
     selectOptions: ["Foo", "Bar", "Fizz", "Buzz"],
     dialog: false,
@@ -154,16 +141,16 @@ export default {
       ];
     },
 
-    editItem(item) {
-      this.editedIndex = this.comments.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
+    showComment(item) {
+      console.log('show');
     },
 
-    deleteItem(item) {
-      this.editedIndex = this.comments.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialogDelete = true;
+    confirmComment(item) {
+      console.log('confirm');
+    },
+
+    rejectComment(item) {
+      console.log('reject');
     },
 
     deleteItemConfirm() {

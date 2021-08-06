@@ -127,15 +127,6 @@
       />
 
 
-      <!--<v-tooltip bottom>-->
-      <!--<template v-slot:activator="{ on, attrs }">-->
-      <!--<v-icon v-bind="attrs" v-on="on" small @click="deleteItem(item)">-->
-      <!--mdi-delete-->
-      <!--</v-icon>-->
-      <!--</template>-->
-      <!--<span>حذف</span>-->
-      <!--</v-tooltip>-->
-
     </template>
 
     <template v-slot:no-data>

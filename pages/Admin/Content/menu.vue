@@ -33,12 +33,10 @@ export default {
       {
         text: "مارکت",
         disabled: false,
-        href: "/admin/content",
       },
       {
         text: "منو ها",
         disabled: true,
-        href: "/",
       },
     ],
   }),

@@ -181,47 +181,32 @@
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon
-            v-bind="attrs"
-            v-on="on"
-            small
-            class="mr-2"
-            @click="editItem(item)"
-          >
-            mdi-pencil
-          </v-icon>
-        </template>
-        <span>ویرایش</span>
-      </v-tooltip>
+      <ActionIcon
+        v-bind:icon="`mdi-pencil`"
+        v-bind:tooltip="`ویرایش`"
+        v-bind:item="item"
+        v-on:click="editItem(item)"
+      />
+      <ActionIcon
+        v-bind:icon="`mdi-delete`"
+        v-bind:tooltip="`حذف`"
+        v-bind:item="item"
+        v-on:click="deleteItem(item)"
+      />
 
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon v-bind="attrs" v-on="on" small @click="deleteItem(item)">
-            mdi-delete
-          </v-icon>
-        </template>
-        <span>حذف</span>
-      </v-tooltip>
+      <ActionIcon
+        v-bind:icon="`  mdi-dots-grid`"
+        v-bind:tooltip="`فرم کالا`"
+        v-bind:item="item"
+        v-on:click="property(item)"
+      />
 
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon v-bind="attrs" v-on="on" small @click="deleteItem(item)">
-            mdi-dots-grid
-          </v-icon>
-        </template>
-        <span>فرم کالا</span>
-      </v-tooltip>
-
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon v-bind="attrs" v-on="on" small @click="deleteItem(item)">
-            mdi-folder-multiple-image
-          </v-icon>
-        </template>
-        <span>گالری تصاویر</span>
-      </v-tooltip>
+      <ActionIcon
+        v-bind:icon="`mdi-folder-multiple-image`"
+        v-bind:tooltip="`گالری تصاویر`"
+        v-bind:item="item"
+        v-on:click="gallery(item)"
+      />
     </template>
 
     <template v-slot:no-data>
@@ -233,6 +218,7 @@
 <script>
   import {validationMixin} from 'vuelidate'
   import {required} from 'vuelidate/lib/validators'
+  import ActionIcon from "../../AppBarComponents/ActionIcon";
 
   let CKEditor;
   if (process.browser) {
@@ -240,6 +226,7 @@
   }
   export default {
     components: {
+      ActionIcon,
       ckeditor: process.browser ? CKEditor.component : null,
     },
 
@@ -282,7 +269,7 @@
       editedItem: {
 
         name: "",
-        image: "",
+        image: [],
         price: "",
         weight: "",
         category: "",
@@ -292,7 +279,7 @@
       },
       defaultItem: {
         name: "",
-        image: "",
+        image: [],
         price: "",
         weight: "",
         category: "",
@@ -420,18 +407,29 @@
       ,
 
       editItem(item) {
+        console.log('edit', item);
+
         this.editedIndex = this.products.indexOf(item);
         this.editedItem = Object.assign({}, item);
         this.dialog = true;
-      }
-      ,
+      },
 
       deleteItem(item) {
+        console.log('delete', item);
+
         this.editedIndex = this.products.indexOf(item);
         this.editedItem = Object.assign({}, item);
         this.dialogDelete = true;
-      }
-      ,
+      },
+      property(item) {
+        console.log('property', item);
+
+      },
+
+      gallery(item) {
+        console.log('gallery', item);
+
+      },
 
       deleteItemConfirm() {
         this.products.splice(this.editedIndex, 1);

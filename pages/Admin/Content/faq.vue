@@ -33,12 +33,10 @@ export default {
       {
         text: "مارکت",
         disabled: false,
-        href: "/admin/content",
       },
       {
         text: "سوالات متداول",
         disabled: true,
-        href: "/",
       },
     ],
   }),

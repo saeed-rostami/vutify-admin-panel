@@ -2,6 +2,7 @@
   <v-tooltip bottom>
     <template v-slot:activator="{ on, attrs }">
       <v-icon
+
         v-bind="attrs"
         v-on="on"
         small
@@ -35,8 +36,8 @@
       },
     },
     methods: {
-      event(){
-        this.$emit('click' , this.item)
+      event() {
+        this.$emit('click', this.item)
       }
     }
   }

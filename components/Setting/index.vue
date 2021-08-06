@@ -74,9 +74,8 @@
                       v-model:trim="$v.editedItem.value.$model"
                     ></v-text-field>
                   </v-col>
-
-
                 </v-row>
+
               </v-container>
             </v-card-text>
 
@@ -111,31 +110,23 @@
           </v-card>
         </v-dialog>
       </v-toolbar>
+
+
     </template>
     <template v-slot:item.actions="{ item }">
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon
-            v-bind="attrs"
-            v-on="on"
-            small
-            class="mr-2"
-            @click="editItem(item)"
-          >
-            mdi-pencil
-          </v-icon>
-        </template>
-        <span>ویرایش</span>
-      </v-tooltip>
+      <ActionIcon
+        v-bind:icon="`mdi-pencil`"
+        v-bind:tooltip="`ویرایش`"
+        v-bind:item="item"
+        v-on:click="editItem(item)"
+      />
 
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-icon disabled v-bind="attrs" v-on="on" small @click="deleteItem(item)">
-            mdi-delete
-          </v-icon>
-        </template>
-        <span>حذف</span>
-      </v-tooltip>
+      <ActionIcon
+        v-bind:icon="`mdi-delete`"
+        v-bind:tooltip="`حذف`"
+        v-bind:item="item"
+        v-on:click="deleteItem(item)"
+      />
     </template>
     <template v-slot:no-data>
       <v-btn
@@ -151,8 +142,10 @@
 <script>
   import {validationMixin} from 'vuelidate'
   import {required} from 'vuelidate/lib/validators'
+  import ActionIcon from "../AppBarComponents/ActionIcon";
 
   export default {
+    components: {ActionIcon},
     mixins: [validationMixin],
 
     validations: {
