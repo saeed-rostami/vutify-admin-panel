@@ -18,8 +18,8 @@
 </template>
 
 <script>
-import Notifications from "../components/AppBarComponents/Notifications.vue";
-import UserAcc from "../components/AppBarComponents/UserAcc.vue";
+import Notifications from "../components/CustomComponent/AppBarComponents/Notifications.vue";
+import UserAcc from "../components/CustomComponent/AppBarComponents/UserAcc.vue";
 export default {
   components: { UserAcc, Notifications },
   name: "AppToolbar",

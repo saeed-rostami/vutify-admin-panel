@@ -143,7 +143,7 @@
 </template>
 
 <script>
-  import ActionIcon from "../../AppBarComponents/ActionIcon";
+  import ActionIcon from "../../CustomComponent/ActionIcon";
 
   export default {
     components: {ActionIcon},

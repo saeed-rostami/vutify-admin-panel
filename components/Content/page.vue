@@ -78,23 +78,12 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <v-dialog v-model="dialogDelete" max-width="500px">
-          <v-card>
-            <v-card-title class="text-h5"
-            >آیا از حذف این آیتم اطمینان دارید؟
-            </v-card-title
-            >
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">لغو</v-btn>
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm"
-              >بله
-              </v-btn
-              >
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+        <DeleteDialog
+          v-bind:dialogDelete="dialogDelete"
+          v-on:deleteItemConfirm="deleteItemConfirm"
+          v-on:closeDelete="closeDelete"
+        />
+
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
@@ -129,7 +118,8 @@
 <script>
   import {validationMixin} from 'vuelidate'
   import {required} from 'vuelidate/lib/validators'
-  import ActionIcon from "../AppBarComponents/ActionIcon";
+  import ActionIcon from "../CustomComponent/ActionIcon";
+  import DeleteDialog from "../CustomComponent/DeleteDialog";
 
   let CKEditor;
   if (process.browser) {
@@ -137,6 +127,7 @@
   }
   export default {
     components: {
+      DeleteDialog,
       ActionIcon,
       ckeditor: process.browser ? CKEditor.component : null,
     },

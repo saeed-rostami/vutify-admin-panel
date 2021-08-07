@@ -194,7 +194,7 @@
 <script>
   import {validationMixin} from 'vuelidate'
   import {required} from 'vuelidate/lib/validators'
-  import ActionIcon from "../../AppBarComponents/ActionIcon";
+  import ActionIcon from "../../CustomComponent/ActionIcon";
 
   export default {
     mixins: [validationMixin],
