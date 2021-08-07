@@ -37,7 +37,7 @@
                     ></v-text-field>
                   </v-col>
                   <v-col cols="12" sm="6" md="6">
-                    <v-text-field
+                    <v-select
                       v-model="editedItem.category"
                       label="منو والد"
                       v-bind:items="selectOptions"
@@ -49,7 +49,7 @@
                     >
 
                       >
-                    </v-text-field>
+                    </v-select>
                   </v-col>
                   <v-col cols="12" sm="6" md="6">
                     <v-text-field v-model="editedItem.link"
@@ -170,13 +170,13 @@
         name: "",
         category: "",
         link: "",
-        image: "",
+        image: [],
       },
       defaultItem: {
         name: "",
         category: "",
         link: "",
-        image: "",
+        image: [],
       },
     }),
 
