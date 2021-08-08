@@ -160,39 +160,27 @@
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <v-dialog v-model="dialogDelete" max-width="500px">
-          <v-card>
-            <v-card-title class="text-h5"
-            >آیا از حذف این آیتم اطمینان دارید؟
-            </v-card-title
-            >
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">لغو</v-btn>
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm"
-              >بله
-              </v-btn
-              >
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+        <DeleteDialog
+          v-bind:dialogDelete="dialogDelete"
+          v-on:deleteItemConfirm="deleteItemConfirm"
+          v-on:closeDelete="closeDelete"
+        />
+
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
       <ActionIcon
-        v-bind:icon="` mdi-eye`"
-        v-bind:tooltip="`نمایش`"
+        v-bind:icon="`mdi-pencil`"
+        v-bind:tooltip="`ویرایش`"
         v-bind:item="item"
-        v-on:click="showComment(item)"
+        v-on:click="editItem(item)"
       />
 
-
       <ActionIcon
-        v-bind:icon="`mdi-check-outline`"
-        v-bind:tooltip="`تایید`"
+        v-bind:icon="`mdi-delete`"
+        v-bind:tooltip="`حذف`"
         v-bind:item="item"
-        v-on:click="confirmComment(item)"
+        v-on:click="deleteItem(item)"
       />
     </template>
 
@@ -206,9 +194,11 @@
   import {validationMixin} from 'vuelidate'
   import {required} from 'vuelidate/lib/validators'
   import ActionIcon from "../../CustomComponent/ActionIcon";
+  import DeleteDialog from "../../CustomComponent/DeleteDialog";
 
   export default {
     components: {
+      DeleteDialog,
       ActionIcon,
       PersianDatePicker: () => import('vue-persian-datetime-picker'),
     },

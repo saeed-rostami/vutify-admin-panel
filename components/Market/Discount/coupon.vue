@@ -7,13 +7,13 @@
   >
     <template v-slot:item.image="{ item }">
       <v-avatar>
-        <img :src="item.image" alt="alt" />
+        <img :src="item.image" alt="alt"/>
       </v-avatar>
     </template>
 
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>کوپن تخفیف </v-toolbar-title>
+        <v-toolbar-title>کوپن تخفیف</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="500px">
@@ -79,8 +79,7 @@
                   </v-col>
 
 
-
-<!-- START -->
+                  <!-- START -->
                   <v-col cols="12" sm="6" md="6">
                     <client-only>
                       <label>تاریخ شروع</label>
@@ -96,56 +95,56 @@
                     </client-only>
                   </v-col>
                   <!--<v-col cols="12" sm="6" md="4">-->
-                    <!--<v-menu-->
-                      <!--v-model="startDatePicker"-->
-                      <!--:close-on-content-click="false"-->
-                      <!--:nudge-right="40"-->
-                      <!--transition="scale-transition"-->
-                      <!--offset-y-->
-                      <!--min-width="auto"-->
-                    <!--&gt;-->
-                      <!--<template v-slot:activator="{ on, attrs }">-->
-                        <!--<v-text-field-->
-                          <!--v-model="editedItem.start"-->
-                          <!--label="تاریخ شروع"-->
-                          <!--prepend-icon="mdi-calendar"-->
-                          <!--readonly-->
-                          <!--v-bind="attrs"-->
-                          <!--v-on="on"-->
-                        <!--&gt;</v-text-field>-->
-                      <!--</template>-->
-                      <!--<v-date-picker-->
-                        <!--v-model="editedItem.start"-->
-                        <!--@input="startDatePicker = false"-->
-                      <!--&gt;</v-date-picker>-->
-                    <!--</v-menu>-->
+                  <!--<v-menu-->
+                  <!--v-model="startDatePicker"-->
+                  <!--:close-on-content-click="false"-->
+                  <!--:nudge-right="40"-->
+                  <!--transition="scale-transition"-->
+                  <!--offset-y-->
+                  <!--min-width="auto"-->
+                  <!--&gt;-->
+                  <!--<template v-slot:activator="{ on, attrs }">-->
+                  <!--<v-text-field-->
+                  <!--v-model="editedItem.start"-->
+                  <!--label="تاریخ شروع"-->
+                  <!--prepend-icon="mdi-calendar"-->
+                  <!--readonly-->
+                  <!--v-bind="attrs"-->
+                  <!--v-on="on"-->
+                  <!--&gt;</v-text-field>-->
+                  <!--</template>-->
+                  <!--<v-date-picker-->
+                  <!--v-model="editedItem.start"-->
+                  <!--@input="startDatePicker = false"-->
+                  <!--&gt;</v-date-picker>-->
+                  <!--</v-menu>-->
                   <!--</v-col>-->
 
                   <!-- EDN -->
-                   <!--<v-col cols="12" sm="6" md="4">-->
-                    <!--<v-menu-->
-                      <!--v-model="endDatePicker"-->
-                      <!--:close-on-content-click="false"-->
-                      <!--:nudge-right="40"-->
-                      <!--transition="scale-transition"-->
-                      <!--offset-y-->
-                      <!--min-width="auto"-->
-                    <!--&gt;-->
-                      <!--<template v-slot:activator="{ on, attrs }">-->
-                        <!--<v-text-field-->
-                          <!--v-model="editedItem.end"-->
-                          <!--label="تاریخ پایان"-->
-                          <!--prepend-icon="mdi-calendar"-->
-                          <!--readonly-->
-                          <!--v-bind="attrs"-->
-                          <!--v-on="on"-->
-                        <!--&gt;</v-text-field>-->
-                      <!--</template>-->
-                      <!--<v-date-picker-->
-                        <!--v-model="editedItem.end"-->
-                        <!--@input="endDatePicker = false"-->
-                      <!--&gt;</v-date-picker>-->
-                    <!--</v-menu>-->
+                  <!--<v-col cols="12" sm="6" md="4">-->
+                  <!--<v-menu-->
+                  <!--v-model="endDatePicker"-->
+                  <!--:close-on-content-click="false"-->
+                  <!--:nudge-right="40"-->
+                  <!--transition="scale-transition"-->
+                  <!--offset-y-->
+                  <!--min-width="auto"-->
+                  <!--&gt;-->
+                  <!--<template v-slot:activator="{ on, attrs }">-->
+                  <!--<v-text-field-->
+                  <!--v-model="editedItem.end"-->
+                  <!--label="تاریخ پایان"-->
+                  <!--prepend-icon="mdi-calendar"-->
+                  <!--readonly-->
+                  <!--v-bind="attrs"-->
+                  <!--v-on="on"-->
+                  <!--&gt;</v-text-field>-->
+                  <!--</template>-->
+                  <!--<v-date-picker-->
+                  <!--v-model="editedItem.end"-->
+                  <!--@input="endDatePicker = false"-->
+                  <!--&gt;</v-date-picker>-->
+                  <!--</v-menu>-->
                   <!--</v-col>-->
 
                   <v-col cols="12" sm="6" md="6">
@@ -162,54 +161,44 @@
                       />
                     </client-only>
                   </v-col>
-                  
+
                 </v-row>
               </v-container>
             </v-card-text>
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="close"> لغو </v-btn>
-              <v-btn color="blue darken-1" text @click="save"> ایجاد </v-btn>
+              <v-btn color="blue darken-1" text @click="close"> لغو</v-btn>
+              <v-btn color="blue darken-1" text @click="save"> ایجاد</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
-        <v-dialog v-model="dialogDelete" max-width="500px">
-          <v-card>
-            <v-card-title class="text-h5"
-              >آیا از حذف این آیتم اطمینان دارید؟</v-card-title
-            >
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="closeDelete">لغو</v-btn>
-              <v-btn color="blue darken-1" text @click="deleteItemConfirm"
-                >بله</v-btn
-              >
-              <v-spacer></v-spacer>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+        <DeleteDialog
+          v-bind:dialogDelete="dialogDelete"
+          v-on:deleteItemConfirm="deleteItemConfirm"
+          v-on:closeDelete="closeDelete"
+        />
+
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
       <ActionIcon
-        v-bind:icon="` mdi-eye`"
-        v-bind:tooltip="`نمایش`"
+        v-bind:icon="`mdi-pencil`"
+        v-bind:tooltip="`ویرایش`"
         v-bind:item="item"
-        v-on:click="showComment(item)"
+        v-on:click="editItem(item)"
       />
 
-
       <ActionIcon
-        v-bind:icon="`mdi-check-outline`"
-        v-bind:tooltip="`تایید`"
+        v-bind:icon="`mdi-delete`"
+        v-bind:tooltip="`حذف`"
         v-bind:item="item"
-        v-on:click="confirmComment(item)"
+        v-on:click="deleteItem(item)"
       />
     </template>
 
     <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize"> Reset </v-btn>
+      <v-btn color="primary" @click="initialize"> Reset</v-btn>
     </template>
   </v-data-table>
 </template>
@@ -218,189 +207,192 @@
   import {validationMixin} from 'vuelidate'
   import {required} from 'vuelidate/lib/validators'
   import ActionIcon from "../../CustomComponent/ActionIcon";
-export default {
-  components: {
-    ActionIcon,
-    PersianDatePicker: () => import('vue-persian-datetime-picker'),
-  },
+  import DeleteDialog from "../../CustomComponent/DeleteDialog";
 
-  mixins: [validationMixin],
-
-  validations: {
-    editedItem: {
-      coupon_id: {required},
-      percent: {required},
-      max: {required},
-      type: {required},
-      start: {required},
-      end: {required},
-    }
-  },
-
-  data: () => ({
-    startDatePicker: false,
-    endDatePicker: false,
-    selectOptions: ["Foo", "Bar", "Fizz", "Buzz"],
-    dialog: false,
-    dialogDelete: false,
-    headers: [
-      { text: "#", value: "id" },
-      { text: "کد کوپن", value: "coupon_id" },
-      { text: "درصد تخفیف", value: "percent" },
-      { text: "سقف تخفیف", value: "max" },
-      { text: "نوع کوپن", value: "type" },
-      { text: "تاریخ شروع", value: "start" },
-      { text: "تاریخ پایان", value: "end" },
-
-      { text: "تنظیمات", value: "actions", sortable: false },
-    ],
-    coupons: [],
-    editedIndex: -1,
-    editedItem: {
-      id: "",
-      coupon_id: "",
-      percent: "",
-      max: "",
-      type: "",
-      start: "",
-      end: "",
-    },
-    defaultItem: {
-      id: "",
-      coupon_id: "",
-      percent: "",
-      max: "",
-      type: "",
-      start: "",
-      end: "",
-    },
-  }),
-
-  computed: {
-    couponIDErrors(){
-      const errors = [];
-      if (!this.$v.editedItem.coupon_id.$dirty) return errors;
-
-      !this.$v.editedItem.coupon_id.required && errors.push('کد کوپن الزامی است');
-      return errors
+  export default {
+    components: {
+      DeleteDialog,
+      ActionIcon,
+      PersianDatePicker: () => import('vue-persian-datetime-picker'),
     },
 
-    percentErrors(){
-      const errors = [];
-      if (!this.$v.editedItem.percent.$dirty) return errors;
+    mixins: [validationMixin],
 
-      !this.$v.editedItem.percent.required && errors.push('درصد کوپن الزامی است');
-      return errors
-    },
-
-    maxErrors(){
-      const errors = [];
-      if (!this.$v.editedItem.max.$dirty) return errors;
-
-      !this.$v.editedItem.max.required && errors.push('سقف کوپن الزامی است');
-      return errors
-    },
-
-    typeErrors(){
-      const errors = [];
-      if (!this.$v.editedItem.type.$dirty) return errors;
-
-      !this.$v.editedItem.type.required && errors.push('نوع کوپن الزامی است');
-      return errors
-    },
-
-    startErrors(){
-      const errors = [];
-      if (!this.$v.editedItem.start.$dirty) return errors;
-
-      !this.$v.editedItem.start.required && errors.push('تاریخ شروع الزامی است');
-      return errors
-    },
-    endErrors(){
-      const errors = [];
-      if (!this.$v.editedItem.end.$dirty) return errors;
-
-      !this.$v.editedItem.end.required && errors.push('تاریخ پایان الزامی است');
-      return errors
-    },
-
-
-    formTitle() {
-      return this.editedIndex === -1 ? "ایجاد" : "ویرایش";
-    },
-  },
-
-  watch: {
-    dialog(val) {
-      val || this.close();
-    },
-    dialogDelete(val) {
-      val || this.closeDelete();
-    },
-  },
-
-  created() {
-    this.initialize();
-  },
-
-  methods: {
-    initialize() {
-      this.coupons = [
-        {
-          id: "1",
-          coupon_id: "24",
-          percent: "20",
-          max: "500",
-          type: "1",
-          start: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-          end: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
-        },
-      ];
-    },
-
-    editItem(item) {
-      this.editedIndex = this.coupons.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
-    },
-
-    deleteItem(item) {
-      this.editedIndex = this.coupons.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialogDelete = true;
-    },
-
-    deleteItemConfirm() {
-      this.coupons.splice(this.editedIndex, 1);
-      this.closeDelete();
-    },
-
-    close() {
-      this.dialog = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
-
-    closeDelete() {
-      this.dialogDelete = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
-
-    save() {
-      if (this.editedIndex > -1) {
-        Object.assign(this.coupons[this.editedIndex], this.editedItem);
-      } else {
-        this.coupons.push(this.editedItem);
+    validations: {
+      editedItem: {
+        coupon_id: {required},
+        percent: {required},
+        max: {required},
+        type: {required},
+        start: {required},
+        end: {required},
       }
-      this.close();
     },
-  },
-};
+
+    data: () => ({
+      startDatePicker: false,
+      endDatePicker: false,
+      selectOptions: ["Foo", "Bar", "Fizz", "Buzz"],
+      dialog: false,
+      dialogDelete: false,
+      headers: [
+        {text: "#", value: "id"},
+        {text: "کد کوپن", value: "coupon_id"},
+        {text: "درصد تخفیف", value: "percent"},
+        {text: "سقف تخفیف", value: "max"},
+        {text: "نوع کوپن", value: "type"},
+        {text: "تاریخ شروع", value: "start"},
+        {text: "تاریخ پایان", value: "end"},
+
+        {text: "تنظیمات", value: "actions", sortable: false},
+      ],
+      coupons: [],
+      editedIndex: -1,
+      editedItem: {
+        id: "",
+        coupon_id: "",
+        percent: "",
+        max: "",
+        type: "",
+        start: "",
+        end: "",
+      },
+      defaultItem: {
+        id: "",
+        coupon_id: "",
+        percent: "",
+        max: "",
+        type: "",
+        start: "",
+        end: "",
+      },
+    }),
+
+    computed: {
+      couponIDErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.coupon_id.$dirty) return errors;
+
+        !this.$v.editedItem.coupon_id.required && errors.push('کد کوپن الزامی است');
+        return errors
+      },
+
+      percentErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.percent.$dirty) return errors;
+
+        !this.$v.editedItem.percent.required && errors.push('درصد کوپن الزامی است');
+        return errors
+      },
+
+      maxErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.max.$dirty) return errors;
+
+        !this.$v.editedItem.max.required && errors.push('سقف کوپن الزامی است');
+        return errors
+      },
+
+      typeErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.type.$dirty) return errors;
+
+        !this.$v.editedItem.type.required && errors.push('نوع کوپن الزامی است');
+        return errors
+      },
+
+      startErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.start.$dirty) return errors;
+
+        !this.$v.editedItem.start.required && errors.push('تاریخ شروع الزامی است');
+        return errors
+      },
+      endErrors() {
+        const errors = [];
+        if (!this.$v.editedItem.end.$dirty) return errors;
+
+        !this.$v.editedItem.end.required && errors.push('تاریخ پایان الزامی است');
+        return errors
+      },
+
+
+      formTitle() {
+        return this.editedIndex === -1 ? "ایجاد" : "ویرایش";
+      },
+    },
+
+    watch: {
+      dialog(val) {
+        val || this.close();
+      },
+      dialogDelete(val) {
+        val || this.closeDelete();
+      },
+    },
+
+    created() {
+      this.initialize();
+    },
+
+    methods: {
+      initialize() {
+        this.coupons = [
+          {
+            id: "1",
+            coupon_id: "24",
+            percent: "20",
+            max: "500",
+            type: "1",
+            start: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+            end: (new Date(Date.now() - (new Date()).getTimezoneOffset() * 60000)).toISOString().substr(0, 10),
+          },
+        ];
+      },
+
+      editItem(item) {
+        this.editedIndex = this.coupons.indexOf(item);
+        this.editedItem = Object.assign({}, item);
+        this.dialog = true;
+      },
+
+      deleteItem(item) {
+        this.editedIndex = this.coupons.indexOf(item);
+        this.editedItem = Object.assign({}, item);
+        this.dialogDelete = true;
+      },
+
+      deleteItemConfirm() {
+        this.coupons.splice(this.editedIndex, 1);
+        this.closeDelete();
+      },
+
+      close() {
+        this.dialog = false;
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem);
+          this.editedIndex = -1;
+        });
+      },
+
+      closeDelete() {
+        this.dialogDelete = false;
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem);
+          this.editedIndex = -1;
+        });
+      },
+
+      save() {
+        if (this.editedIndex > -1) {
+          Object.assign(this.coupons[this.editedIndex], this.editedItem);
+        } else {
+          this.coupons.push(this.editedItem);
+        }
+        this.close();
+      },
+    },
+  };
 </script>
 
 <style scoped>
