@@ -380,6 +380,7 @@
             category: "برقی",
             property: "xx",
             description: "",
+            inputs: []
 
           },
 
@@ -392,6 +393,7 @@
             category: "برقی",
             property: "ssxx",
             description: "",
+            inputs: []
 
           },
         ];
@@ -452,7 +454,7 @@
           Object.assign(this.products[this.editedIndex], this.editedItem);
         } else {
           this.products.push(this.editedItem);
-          this.products.push(this.inputs);
+          this.editedItem.inputs.push(this.inputs);
           console.log(this.editedItem)
         }
         this.close();
