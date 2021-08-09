@@ -127,11 +127,13 @@
                     <v-row>
                       <v-col v-for="(input, index) in inputs" v-bind:key="index" cols="12" sm="6" md="4">
                         <v-text-field
+                          v-model="input.propertyName"
                           :name="propertyName"
                           label="ویژگی..."
                         ></v-text-field>
 
                         <v-text-field
+                          v-model="input.propertyValue"
                           :name="propertyValue"
                           label="مقدار..."
                         ></v-text-field>
@@ -257,7 +259,6 @@
       products: [],
       editedIndex: -1,
       editedItem: {
-
         name: "",
         image: [],
         price: "",
@@ -265,7 +266,7 @@
         category: "",
         property: "",
         description: "",
-
+        inputs: []
       },
       defaultItem: {
         name: "",
@@ -275,6 +276,7 @@
         category: "",
         property: "",
         description: "",
+        inputs: []
       },
     }),
 
@@ -450,6 +452,8 @@
           Object.assign(this.products[this.editedIndex], this.editedItem);
         } else {
           this.products.push(this.editedItem);
+          this.products.push(this.inputs);
+          console.log(this.editedItem)
         }
         this.close();
       }
