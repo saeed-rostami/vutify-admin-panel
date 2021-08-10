@@ -11,6 +11,8 @@ export default {
   ** See https://nuxtjs.org/api/configuration-target
   */
   target: 'server',
+
+  loading: {color: '#1e39b1', duration: '5000', height: '4px'},
   /*
   ** Headers of the page
   ** See https://nuxtjs.org/api/configuration-head
