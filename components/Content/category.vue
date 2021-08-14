@@ -5,6 +5,12 @@
     sort-by="name"
     class="elevation-1"
   >
+    <template v-slot:item.image="{item}">
+      <v-avatar
+      >
+        <img :src="`http://localhost:8000/storage/images/${item.image}`" alt="alt">
+      </v-avatar>
+    </template>
     <template v-slot:top>
       <v-toolbar
         flat
@@ -30,6 +36,7 @@
             >
               ایجاد
             </v-btn>
+
           </template>
           <v-card>
             <v-card-title>
@@ -55,31 +62,61 @@
                       v-model:trim="$v.editedItem.name.$model"
                     ></v-text-field>
                   </v-col>
+
+
                   <v-col
                     cols="12"
                     sm="6"
                     md="4"
                   >
                     <v-select
-                      v-model="editedItem.category"
-                      label="دسته بندی"
-                      :error-messages="categoryErrors"
+                      v-model="editedItem.status"
+                      label="وضعیت"
+                      :error-messages="statusErrors"
                       required
-                      @change="$v.editedItem.category.$touch()"
-                      @blur="$v.editedItem.category.$touch"
-                      v-bind:items="selectOptions"
-                      v-model:trim="$v.editedItem.category.$model"
+                      @change="$v.editedItem.status.$touch()"
+                      @blur="$v.editedItem.status.$touch"
+                      v-bind:items="statusOptions"
+                      v-model:trim="$v.editedItem.status.$model"
                     >
-
-
                     </v-select>
                   </v-col>
+
+                  <v-col cols="12" sm="6" md="4">
+                    <v-file-input
+                      v-on:change="selectedImage"
+                      id="file"
+                      type="file"
+                      v-model="editedItem.image"
+                      :error-messages="imageErrors"
+                      label="تصویر"
+                      required
+                      @input="$v.editedItem.image.$touch()"
+                      @blur="$v.editedItem.image.$touch()"
+                      v-model:trim="$v.editedItem.image.$model"
+                    ></v-file-input>
+                  </v-col>
+
+
                   <v-col
                     cols="12"
-                    sm="6"
-                    md="4"
+                    sm="12"
+                    md="12"
                   >
-
+                    <v-textarea
+                      v-model="editedItem.description"
+                      :error-messages="descriptionErrors"
+                      label="توضیحات"
+                      required
+                      auto-grow
+                      outlined
+                      rows="3"
+                      row-height="25"
+                      shaped
+                      @input="$v.editedItem.description.$touch()"
+                      @blur="$v.editedItem.description.$touch()"
+                      v-model:trim="$v.editedItem.description.$model"
+                    ></v-textarea>
                   </v-col>
                 </v-row>
               </v-container>
@@ -101,14 +138,19 @@
               >
                 ایجاد
               </v-btn>
+
+
             </v-card-actions>
           </v-card>
         </v-dialog>
+
+
         <DeleteDialog
           v-bind:dialogDelete="dialogDelete"
           v-on:deleteItemConfirm="deleteItemConfirm"
           v-on:closeDelete="closeDelete"
         />
+
 
       </v-toolbar>
     </template>
@@ -131,7 +173,6 @@
     <template v-slot:no-data>
       <v-btn
         color="primary"
-        @click="initialize"
       >
         Reset
       </v-btn>
@@ -149,34 +190,49 @@
     components: {DeleteDialog, ActionIcon},
     mixins: [validationMixin],
 
+    props: {
+      categories: {
+        type: Array,
+        required: true
+      }
+    },
+
     validations: {
       editedItem: {
         name: {required},
-        category: {required},
+        description: {required},
+        status: {required},
+        image: {required},
       }
     },
     data: () => ({
-      selectOptions: ['Foo', 'Bar', 'Fizz', 'Buzz'],
+      imageFile: null,
+      statusOptions: ['Active', 'DeActive'],
 
       dialog: false,
       dialogDelete: false,
       headers: [
         {text: "#", value: "id"},
         {text: 'نام', value: 'name'},
-        {text: 'دسته بندی', value: 'category'},
+        {text: 'توشیحات', value: 'description'},
+        {text: 'وضعیت', value: 'status'},
+        {text: 'تصویر', value: 'image'},
         {text: 'تنظیمات', value: 'actions', sortable: false},
       ],
-      categories: [],
+      // categories: [],
       editedIndex: -1,
       editedItem: {
         name: '',
-        category: '',
+        description: '',
+        status: '',
+        image: [],
 
       },
       defaultItem: {
         name: '',
-        category: '',
-
+        description: '',
+        status: '',
+        image: [],
       },
     }),
 
@@ -185,17 +241,35 @@
         const errors = [];
         if (!this.$v.editedItem.name.$dirty) return errors;
 
+
         !this.$v.editedItem.name.required && errors.push('نام دسته بندی الزامی است');
         return errors
       },
 
-      categoryErrors() {
+      descriptionErrors() {
         const errors = []
-        if (!this.$v.editedItem.category.$dirty) return errors;
+        if (!this.$v.editedItem.description.$dirty) return errors;
 
-        !this.$v.editedItem.category.required && errors.push(' دسته بندی الزامی است');
+        !this.$v.editedItem.description.required && errors.push(' توضیحات الزامی است');
         return errors
       },
+
+      imageErrors() {
+        const errors = []
+        if (!this.$v.editedItem.image.$dirty) return errors;
+
+        !this.$v.editedItem.image.required && errors.push(' تصویر الزامی است');
+        return errors
+      },
+
+      statusErrors() {
+        const errors = []
+        if (!this.$v.editedItem.status.$dirty) return errors;
+
+        !this.$v.editedItem.status.required && errors.push(' وضعیت الزامی است');
+        return errors
+      },
+
       formTitle() {
         return this.editedIndex === -1 ? 'ایجاد' : 'ویرایش'
       },
@@ -209,41 +283,59 @@
         val || this.closeDelete()
       },
     },
-
-    created() {
-      this.initialize()
-    },
+    // created() {
+    //   this.initialize();
+    // },
 
     methods: {
-      initialize() {
-        this.categories = [
-          {
-            id: "1",
-            name: 'Iphone',
-            category: 'الکترونیکی'
-          },
-        ]
+
+      selectedImage() {
+        this.imageFile = document.getElementById('file').files[0];
+
       },
+      // initialize() {
+      //   this.categories = [
+      //     {
+      //       id: "1",
+      //       name: 'خبری',
+      //       description: 'اخبار روز',
+      //       status: 'فعال',
+      //       image: '',
+      //     },
+      //   ]
+      // },
 
       editItem(item) {
-        this.editedIndex = this.categories.indexOf(item)
-        this.editedItem = Object.assign({}, item)
+        this.editedIndex = this.categories.indexOf(item);
+        this.editedItem = Object.assign({}, item);
         this.dialog = true
       },
 
       deleteItem(item) {
-        this.editedIndex = this.categories.indexOf(item)
-        this.editedItem = Object.assign({}, item)
+        this.editedIndex = this.categories.indexOf(item);
+        this.editedItem = Object.assign({}, item);
         this.dialogDelete = true
+
       },
 
       deleteItemConfirm() {
-        this.categories.splice(this.editedIndex, 1)
+        this.$axios.$delete(`http://localhost:8000/admin/content/category/${this.editedItem.id}`, {
+          headers: {
+            'Content-Type': 'multipart/form-data'
+          }
+        }).then((response => {
+          console.log(response.status);
+          if (response.status === 200) {
+            // TODO FETCH CATEGORIES FROM SERVE
+          }
+        })).catch((error) => {
+          console.log(error)
+        });
         this.closeDelete()
       },
 
       close() {
-        this.dialog = false
+        this.dialog = false;
         this.$nextTick(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
@@ -251,7 +343,7 @@
       },
 
       closeDelete() {
-        this.dialogDelete = false
+        this.dialogDelete = false;
         this.$nextTick(() => {
           this.editedItem = Object.assign({}, this.defaultItem)
           this.editedIndex = -1
@@ -262,7 +354,29 @@
         if (this.editedIndex > -1) {
           Object.assign(this.categories[this.editedIndex], this.editedItem)
         } else {
-          this.categories.push(this.editedItem)
+          const statusCode = this.editedItem.status === 'Active' ? '1' : '0';
+          let formData = new FormData();
+          formData.append('image', this.imageFile);
+          formData.append('name', this.editedItem.name);
+          formData.append('description', this.editedItem.description);
+          formData.append('status', statusCode);
+
+          console.log(...formData);
+          this.$axios.$post('http://localhost:8000/admin/content/category', formData, {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }).then((response => {
+            console.log(response.status);
+            if (response.status === 200) {
+              // TODO FETCH CATEGORIES FROM SERVE
+
+            }
+
+
+          })).catch((error) => {
+            console.log(error)
+          });
         }
         this.close()
       },

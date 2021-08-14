@@ -18,7 +18,7 @@
       </div>
     </v-flex>
 
-    <index/>
+    <index v-bind:categories="categories"/>
 
   </section>
 </template>
@@ -33,6 +33,7 @@
     }
     ,
     data: () => ({
+      categories: [],
       items: [
         {
           text: "محتوا",
@@ -47,7 +48,17 @@
 
 
     created() {
-      console.log('send api');
+      this.$axios.$get('http://localhost:8000/admin/content/category', {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }).then((response => {
+        console.log(response)
+        this.categories = response.categories;
+      })).catch((error) => {
+        console.log(error)
+      });
+
     }
     ,
   }
