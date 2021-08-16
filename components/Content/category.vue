@@ -125,16 +125,26 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn
+                :disabled='isDisabled'
+                color="blue darken-1"
+                text
+                @click="clearValidation"
+              >
+                پاک کردن خطاها
+              </v-btn>
+
+              <v-btn
                 color="blue darken-1"
                 text
                 @click="close"
               >
                 لغو
               </v-btn>
+
               <v-btn
                 color="blue darken-1"
                 text
-                @click="save"
+                @click="submitForm"
               >
                 ایجاد
               </v-btn>
@@ -185,10 +195,11 @@
   import {required} from 'vuelidate/lib/validators'
   import ActionIcon from "../CustomComponent/ActionIcon";
   import DeleteDialog from "../CustomComponent/DeleteDialog";
+  import Base from "@/mixins/Base";
 
   export default {
     components: {DeleteDialog, ActionIcon},
-    mixins: [validationMixin],
+    mixins: [validationMixin, Base],
 
     props: {
       categories: {
@@ -208,7 +219,6 @@
     data: () => ({
       imageFile: null,
       statusOptions: ['Active', 'DeActive'],
-
       dialog: false,
       dialogDelete: false,
       headers: [
@@ -219,7 +229,6 @@
         {text: 'تصویر', value: 'image'},
         {text: 'تنظیمات', value: 'actions', sortable: false},
       ],
-      // categories: [],
       editedIndex: -1,
       editedItem: {
         name: '',
@@ -263,47 +272,19 @@
       },
 
       statusErrors() {
-        const errors = []
+        const errors = [];
         if (!this.$v.editedItem.status.$dirty) return errors;
 
         !this.$v.editedItem.status.required && errors.push(' وضعیت الزامی است');
         return errors
       },
-
-      formTitle() {
-        return this.editedIndex === -1 ? 'ایجاد' : 'ویرایش'
-      },
     },
 
-    watch: {
-      dialog(val) {
-        val || this.close()
-      },
-      dialogDelete(val) {
-        val || this.closeDelete()
-      },
-    },
-    // created() {
-    //   this.initialize();
-    // },
 
     methods: {
-
       selectedImage() {
         this.imageFile = document.getElementById('file').files[0];
-
       },
-      // initialize() {
-      //   this.categories = [
-      //     {
-      //       id: "1",
-      //       name: 'خبری',
-      //       description: 'اخبار روز',
-      //       status: 'فعال',
-      //       image: '',
-      //     },
-      //   ]
-      // },
 
       editItem(item) {
         this.editedIndex = this.categories.indexOf(item);
@@ -319,67 +300,59 @@
       },
 
       deleteItemConfirm() {
-        this.$axios.$delete(`http://localhost:8000/admin/content/category/${this.editedItem.id}`, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }).then((response => {
-          console.log(response.status);
-          if (response.status === 200) {
-            // TODO FETCH CATEGORIES FROM SERVE
-          }
-        })).catch((error) => {
+        this.$axios.$delete(`content/category/${this.editedItem.id}`)
+          .then((response => {
+            if (response.status === 200) {
+              this.$store.dispatch('Content/category/getAllPostCategories');
+            }
+          })).catch((error) => {
           console.log(error)
         });
         this.closeDelete()
       },
 
-      close() {
-        this.dialog = false;
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        })
-      },
-
-      closeDelete() {
-        this.dialogDelete = false;
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem)
-          this.editedIndex = -1
-        })
-      },
-
       save() {
-        if (this.editedIndex > -1) {
-          Object.assign(this.categories[this.editedIndex], this.editedItem)
-        } else {
-          const statusCode = this.editedItem.status === 'Active' ? '1' : '0';
-          let formData = new FormData();
-          formData.append('image', this.imageFile);
-          formData.append('name', this.editedItem.name);
-          formData.append('description', this.editedItem.description);
-          formData.append('status', statusCode);
+        this.clearValidation();
+        const statusCode = this.editedItem.status === 'Active' ? '1' : '0';
+        let formData = new FormData();
+        formData.append('image', this.imageFile);
+        formData.append('name', this.editedItem.name);
+        formData.append('description', this.editedItem.description);
+        formData.append('status', statusCode);
 
-          console.log(...formData);
-          this.$axios.$post('http://localhost:8000/admin/content/category', formData, {
+        if (this.editedIndex > -1) {
+          formData.append('_method', 'PUT');
+          this.$axios.$post(`content/category/${this.editedItem.id}`, formData, {
             headers: {
-              'Content-Type': 'multipart/form-data'
+              'content-type': 'multipart/form-data',
+              'Accept': 'application/json'
             }
           }).then((response => {
-            console.log(response.status);
+            console.log(response);
             if (response.status === 200) {
-              // TODO FETCH CATEGORIES FROM SERVE
-
+              this.$store.dispatch('Content/category/getAllPostCategories');
             }
+          })).catch((error) => {
+            console.log(error)
+          });
 
-
+        } else {
+          this.$axios.$post('content/category/', formData, {
+            headers: {
+              'content-type': 'multipart/form-data'
+            }
+          }).then((response => {
+            console.log(response);
+            if (response.status === 200) {
+              this.$store.dispatch('Content/category/getAllPostCategories');
+            }
           })).catch((error) => {
             console.log(error)
           });
         }
         this.close()
-      },
+      }
+
     },
   }
 </script>

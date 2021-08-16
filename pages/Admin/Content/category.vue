@@ -18,13 +18,14 @@
       </div>
     </v-flex>
 
-    <index v-bind:categories="categories"/>
+    <index v-bind:categories="GET_POST_CATEGORIES"/>
 
   </section>
 </template>
 
 <script>
   import index from '@/components/Content/category';
+  import {mapGetters} from 'vuex'
 
   export default {
     name: "category",
@@ -33,7 +34,6 @@
     }
     ,
     data: () => ({
-      categories: [],
       items: [
         {
           text: "محتوا",
@@ -46,21 +46,28 @@
       ],
     }),
 
+    async asyncData({store}) {
+      try {
+        await store.dispatch('Content/category/getAllPostCategories')
+      } catch (e) {
+        console.log(e)
+      }
+    },
 
-    created() {
-      this.$axios.$get('http://localhost:8000/admin/content/category', {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }).then((response => {
-        console.log(response)
-        this.categories = response.categories;
-      })).catch((error) => {
-        console.log(error)
-      });
+    computed: {
+      ...mapGetters('Content/category', ['GET_POST_CATEGORIES']),
+    },
 
-    }
-    ,
+
+    // created() {
+    //   this.$getPostCategories.then((response => {
+    //     console.log(response);
+    //     this.categories = response.categories;
+    //   })).catch((error) => {
+    //     console.log(error)
+    //   });
+    //
+    // },
   }
   ;
 </script>

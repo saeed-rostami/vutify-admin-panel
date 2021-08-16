@@ -11,6 +11,11 @@ export default {
   ** See https://nuxtjs.org/api/configuration-target
   */
   target: 'server',
+  //
+  // server: {
+  //   port: 3000,
+  //   host: 'http://local.mydomain.dk',
+  // },
 
   loading: {color: '#1e39b1', duration: '5000', height: '4px'},
   /*
@@ -37,7 +42,9 @@ export default {
   ** Plugins to load before mounting the App
   ** https://nuxtjs.org/guide/plugins
   */
-  plugins: [],
+  plugins: [
+    //
+  ],
   /*
   ** Auto import components
   ** See https://nuxtjs.org/api/configuration-components
@@ -55,6 +62,11 @@ export default {
   modules: [
     '@nuxtjs/axios'
   ],
+
+
+  axios: {
+    baseURL: "http://127.0.0.1:8000/admin/"
+  },
   /*
   ** vuetify module configuration
   ** https://github.com/nuxt-community/vuetify-module
