@@ -71,7 +71,7 @@
                   >
                     <v-select
                       v-model="editedItem.status"
-                      label="وضعیت"
+                      v-bind:label="statusLabel"
                       :error-messages="statusErrors"
                       required
                       @change="$v.editedItem.status.$touch()"
@@ -216,16 +216,21 @@
         image: {required},
       }
     },
+
     data: () => ({
       imageFile: null,
-      statusOptions: ['Active', 'DeActive'],
+      statusOptions: [
+        'فعال',
+        'غیر فعال'
+      ],
       dialog: false,
+      // statusText : statusOptions[0],
       dialogDelete: false,
       headers: [
         {text: "#", value: "id"},
         {text: 'نام', value: 'name'},
         {text: 'توشیحات', value: 'description'},
-        {text: 'وضعیت', value: 'status'},
+        {text: 'وضعیت', value: 'status_text'},
         {text: 'تصویر', value: 'image'},
         {text: 'تنظیمات', value: 'actions', sortable: false},
       ],
@@ -234,6 +239,7 @@
         name: '',
         description: '',
         status: '',
+        status_text: '',
         image: [],
 
       },
@@ -241,11 +247,15 @@
         name: '',
         description: '',
         status: '',
+        status_text: '',
         image: [],
       },
     }),
 
     computed: {
+      statusLabel() {
+        return this.editedItem.status_text ? this.editedItem.status_text : 'وضعیت';
+      },
       nameErrors() {
         const errors = [];
         if (!this.$v.editedItem.name.$dirty) return errors;
@@ -300,8 +310,15 @@
       },
 
       deleteItemConfirm() {
-        this.$axios.$delete(`content/category/${this.editedItem.id}`)
+        this.$axios.$delete(`content/category/${this.editedItem.id}`, {
+          headers: {
+            'content-type': 'application/json',
+            'Accept': 'application/json'
+          }
+        })
           .then((response => {
+            console.log(response);
+
             if (response.status === 200) {
               this.$store.dispatch('Content/category/getAllPostCategories');
             }
@@ -313,12 +330,11 @@
 
       save() {
         this.clearValidation();
-        const statusCode = this.editedItem.status === 'Active' ? '1' : '0';
         let formData = new FormData();
         formData.append('image', this.imageFile);
         formData.append('name', this.editedItem.name);
         formData.append('description', this.editedItem.description);
-        formData.append('status', statusCode);
+        formData.append('status', this.editedItem.status);
 
         if (this.editedIndex > -1) {
           formData.append('_method', 'PUT');

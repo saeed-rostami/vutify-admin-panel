@@ -220,7 +220,7 @@
           {
             id: "1",
             name: 'Iphone',
-            category: 'الکترونیکی'
+            category: this.selectOptions[2]
           },
         ]
       },
