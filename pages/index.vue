@@ -4,6 +4,7 @@
       <h1>
         Welcome
       </h1>
+
       <!-- </nuxt-link> -->
     </v-col>
   </v-layout>
@@ -11,8 +12,7 @@
 
 
 <script>
-
   export default {
-    name: "index"
+    name: "index",
   }
 </script>
