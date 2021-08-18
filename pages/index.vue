@@ -5,6 +5,7 @@
         Welcome
       </h1>
 
+
       <!-- </nuxt-link> -->
     </v-col>
   </v-layout>
