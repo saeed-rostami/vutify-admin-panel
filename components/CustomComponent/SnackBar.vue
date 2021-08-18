@@ -1,15 +1,13 @@
 <template>
-  <div name="snackbars">
-    <v-snackbar v-model="show" :color="color" :top="'top'">
-      {{ text }}
+  <v-snackbar v-bind:value="showSnackbar" :color="color" :top="'top'">
+    {{ text }}
 
-      <template v-slot:action="{ attrs }">
-        <v-btn dark text v-bind="attrs" @click="show = false">
-          بستن
-        </v-btn>
-      </template>
-    </v-snackbar>
-  </div>
+    <!--<template v-slot:action="{ attrs }">-->
+      <!--<v-btn dark text v-bind="attrs" @click="showSnack = !showSnack">-->
+        <!--بستن-->
+      <!--</v-btn>-->
+    <!--</template>-->
+  </v-snackbar>
 </template>
 
 <script>
@@ -24,7 +22,7 @@
         type: String,
         required: true
       },
-      show : {
+      show: {
         type: Boolean,
         required: true,
         default: false
@@ -35,6 +33,12 @@
         timeout: 3000,
       }
     },
+    computed: {
+      showSnackbar() {
+        return !!this.show;
+      }
+    }
+
   }
 </script>
 

@@ -17,7 +17,7 @@ export default {
   //   host: 'http://local.mydomain.dk',
   // },
 
-  loading: {color: '#1e39b1', duration: '5000', height: '4px'},
+  loading: {color: 'green darken-3', duration: '5000', height: '4px'},
   /*
   ** Headers of the page
   ** See https://nuxtjs.org/api/configuration-head
