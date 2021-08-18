@@ -1,4 +1,4 @@
-<template>
+<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
   <section>
     <div>
       <v-breadcrumbs :items="items">
@@ -18,7 +18,8 @@
       </div>
     </v-flex>
 
-    <index v-bind:categories="GET_POST_CATEGORIES"/>
+    <Loading v-if="$fetchState.pending"/>
+    <index v-else v-bind:categories="GET_POST_CATEGORIES"/>
 
   </section>
 </template>
@@ -46,9 +47,9 @@
       ],
     }),
 
-    async asyncData({store}) {
+    async fetch() {
       try {
-        await store.dispatch('Content/category/getAllPostCategories')
+        await this.$store.dispatch('Content/category/getAllPostCategories');
       } catch (e) {
         console.log(e)
       }
@@ -58,16 +59,6 @@
       ...mapGetters('Content/category', ['GET_POST_CATEGORIES']),
     },
 
-
-    // created() {
-    //   this.$getPostCategories.then((response => {
-    //     console.log(response);
-    //     this.categories = response.categories;
-    //   })).catch((error) => {
-    //     console.log(error)
-    //   });
-    //
-    // },
   }
   ;
 </script>

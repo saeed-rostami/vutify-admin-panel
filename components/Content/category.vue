@@ -34,7 +34,7 @@
           >
             <template v-slot:activator="{ on, attrs }">
               <v-btn
-                color="primary"
+                color="success"
                 dark
                 class="mb-2"
                 v-bind="attrs"
@@ -132,7 +132,7 @@
                 <v-spacer></v-spacer>
                 <v-btn
                   :disabled='isDisabled'
-                  color="blue darken-1"
+                  color="success"
                   text
                   @click="clearValidation"
                 >
@@ -140,7 +140,7 @@
                 </v-btn>
 
                 <v-btn
-                  color="blue darken-1"
+                  color="success"
                   text
                   @click="close"
                 >
@@ -148,7 +148,7 @@
                 </v-btn>
 
                 <v-btn
-                  color="blue darken-1"
+                  color="success"
                   text
                   @click="submitForm"
                 >
@@ -188,7 +188,7 @@
       </template>
       <template v-slot:no-data>
         <v-btn
-          color="primary"
+          color="success"
         >
           Reset
         </v-btn>
@@ -299,14 +299,21 @@
         })
           .then((response => {
             console.log(response);
-
             if (response.status === 200) {
               this.ShowSnackBar = true;
-              this.SnackBarColor = 'orange darken-2';
+              this.SnackBarColor = 'success';
               this.SnackBarText = 'با موفقیت حذف شد';
               this.$store.dispatch('Content/category/getAllPostCategories');
             }
+            else  {
+              this.ShowSnackBar = true;
+              this.SnackBarColor = 'error';
+              this.SnackBarText = 'عملیات تاموفق';
+            }
           })).catch((error) => {
+          this.ShowSnackBar = true;
+          this.SnackBarColor = 'error';
+          this.SnackBarText = 'عملیات تاموفق';
           console.log(error)
         });
         this.closeDelete()
@@ -330,9 +337,20 @@
           }).then((response => {
             console.log(response);
             if (response.status === 200) {
+              this.ShowSnackBar = true;
+              this.SnackBarColor = 'success';
+              this.SnackBarText = 'با موفقیت ویرایش شد';
               this.$store.dispatch('Content/category/getAllPostCategories');
             }
+            else  {
+              this.ShowSnackBar = true;
+              this.SnackBarColor = 'error';
+              this.SnackBarText = 'عملیات تاموفق';
+            }
           })).catch((error) => {
+            this.ShowSnackBar = true;
+            this.SnackBarColor = 'error';
+            this.SnackBarText = 'عملیات تاموفق';
             console.log(error)
           });
 
@@ -344,9 +362,20 @@
           }).then((response => {
             console.log(response);
             if (response.status === 200) {
+              this.ShowSnackBar = true;
+              this.SnackBarColor = 'success';
+              this.SnackBarText = 'با موفقیت ایجاد شد';
               this.$store.dispatch('Content/category/getAllPostCategories');
             }
+            else  {
+              this.ShowSnackBar = true;
+              this.SnackBarColor = 'error';
+              this.SnackBarText = 'عملیات تاموفق';
+            }
           })).catch((error) => {
+            this.ShowSnackBar = true;
+            this.SnackBarColor = 'error';
+            this.SnackBarText = 'عملیات تاموفق';
             console.log(error)
           });
         }

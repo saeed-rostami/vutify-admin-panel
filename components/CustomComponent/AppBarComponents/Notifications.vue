@@ -9,7 +9,7 @@
   >
     <template v-slot:activator="{ on }">
       <v-btn icon text slot="activator" v-on="on">
-        <v-badge color="blue" overlap>
+        <v-badge color="success" overlap>
           <span slot="badge"> {{ notifications.length }}</span>
            <v-tooltip bottom>
       <template v-slot:activator="{ on }">
