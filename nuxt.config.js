@@ -43,7 +43,7 @@ export default {
   ** https://nuxtjs.org/guide/plugins
   */
   plugins: [
-    "@/plugins/GlobalComponents"
+    {src: "@/plugins/GlobalComponents", ssr: false}
   ],
   /*
   ** Auto import components
