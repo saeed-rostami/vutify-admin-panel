@@ -132,6 +132,7 @@
                     >
                       <client-only>
                         <Select2
+                          class="style-chooser"
                           multiple
                           taggable
                           v-model="editedItem.tags"
@@ -203,11 +204,7 @@
 
       </template>
       <template v-slot:no-data>
-        <v-btn
-          color="success"
-        >
-          Reset
-        </v-btn>
+        <h1 class="font-weight-bold">هیچ محتوایی وجود ندارد</h1>
       </template>
     </v-data-table>
   </section>

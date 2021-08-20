@@ -15,3 +15,16 @@ $body-font-family: 'Vazir';
 }
 
 @import "vue-select/src/scss/vue-select.scss";
+
+.vs__dropdown-toggle{
+  border-color: forestgreen !important;
+}
+.vs__search {
+  color: forestgreen;
+}
+
+.vs__actions {
+  background-color: forestgreen !important;
+  margin-top: 2px !important;
+  border-radius: 15px !important;
+}
