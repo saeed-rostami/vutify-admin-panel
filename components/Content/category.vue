@@ -124,6 +124,22 @@
                         v-model:trim="$v.editedItem.description.$model"
                       ></v-textarea>
                     </v-col>
+
+                    <v-col
+                      cols="12"
+                      sm="12"
+                      md="12"
+                    >
+                      <client-only>
+                        <Select2
+                          multiple
+                          taggable
+                          v-model="editedItem.tags"
+                          label="name"
+                          placeholder="برچسب ها..."
+                        />
+                      </client-only>
+                    </v-col>
                   </v-row>
                 </v-container>
               </v-card-text>
@@ -254,6 +270,7 @@
         status: '',
         status_text: '',
         image: [],
+        tags: [],
 
       },
       defaultItem: {
@@ -262,6 +279,7 @@
         status: '',
         status_text: '',
         image: [],
+        tags: [],
       },
     }),
 
@@ -304,8 +322,7 @@
               this.SnackBarColor = 'success';
               this.SnackBarText = 'با موفقیت حذف شد';
               this.$store.dispatch('Content/category/getAllPostCategories');
-            }
-            else  {
+            } else {
               this.ShowSnackBar = true;
               this.SnackBarColor = 'error';
               this.SnackBarText = 'عملیات تاموفق';
@@ -313,7 +330,7 @@
           })).catch((error) => {
           this.ShowSnackBar = true;
           this.SnackBarColor = 'error';
-          this.SnackBarText = 'عملیات تاموفق';
+          this.SnackBarText = 'عملیات ناموفق';
           console.log(error)
         });
         this.closeDelete()
@@ -326,6 +343,7 @@
         formData.append('name', this.editedItem.name);
         formData.append('description', this.editedItem.description);
         formData.append('status', this.editedItem.status);
+        formData.append('tags', this.editedItem.tags);
 
         if (this.editedIndex > -1) {
           formData.append('_method', 'PUT');
@@ -335,22 +353,20 @@
               'Accept': 'application/json'
             }
           }).then((response => {
-            console.log(response);
             if (response.status === 200) {
               this.ShowSnackBar = true;
               this.SnackBarColor = 'success';
               this.SnackBarText = 'با موفقیت ویرایش شد';
               this.$store.dispatch('Content/category/getAllPostCategories');
-            }
-            else  {
+            } else {
               this.ShowSnackBar = true;
               this.SnackBarColor = 'error';
-              this.SnackBarText = 'عملیات تاموفق';
+              this.SnackBarText = 'عملیات ناموفق';
             }
           })).catch((error) => {
             this.ShowSnackBar = true;
             this.SnackBarColor = 'error';
-            this.SnackBarText = 'عملیات تاموفق';
+            this.SnackBarText = 'عملیات ناموفق';
             console.log(error)
           });
 
@@ -366,16 +382,15 @@
               this.SnackBarColor = 'success';
               this.SnackBarText = 'با موفقیت ایجاد شد';
               this.$store.dispatch('Content/category/getAllPostCategories');
-            }
-            else  {
+            } else {
               this.ShowSnackBar = true;
               this.SnackBarColor = 'error';
-              this.SnackBarText = 'عملیات تاموفق';
+              this.SnackBarText = 'عملیات ناموفق';
             }
           })).catch((error) => {
             this.ShowSnackBar = true;
             this.SnackBarColor = 'error';
-            this.SnackBarText = 'عملیات تاموفق';
+            this.SnackBarText = 'عملیات ناموفق';
             console.log(error)
           });
         }
