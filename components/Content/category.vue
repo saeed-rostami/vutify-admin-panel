@@ -351,11 +351,15 @@
             }
           }).then((response => {
             if (response.status === 200) {
+              console.log(response);
+
               this.ShowSnackBar = true;
               this.SnackBarColor = 'success';
               this.SnackBarText = 'با موفقیت ویرایش شد';
               this.$store.dispatch('Content/category/getAllPostCategories');
             } else {
+              console.log(response);
+
               this.ShowSnackBar = true;
               this.SnackBarColor = 'error';
               this.SnackBarText = 'عملیات ناموفق';
