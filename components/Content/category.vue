@@ -14,7 +14,7 @@
       <template v-slot:item.image="{item}">
         <v-avatar
         >
-          <img :src="`http://localhost:8000/storage/images/${item.image}`" alt="alt">
+          <img :src="`http://localhost:8000/storage/images/content/category/${item.image}`" alt="alt">
         </v-avatar>
       </template>
       <template v-slot:top>
@@ -255,7 +255,7 @@
       headers: [
         {text: "#", value: "id"},
         {text: 'نام', value: 'name'},
-        {text: 'توشیحات', value: 'description'},
+        {text: 'توضیحات', value: 'description'},
         {text: 'وضعیت', value: 'status_text'},
         {text: 'تصویر', value: 'image'},
         {text: 'تنظیمات', value: 'actions', sortable: false},

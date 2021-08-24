@@ -25,7 +25,7 @@ export const actions = {
       }
     })
       .then(response => {
-        console.log(response);
+        // console.log(response);
         let AllPostCategories = response.categories;
         commit('SET_POST_CATEGORIES', AllPostCategories);
       })
