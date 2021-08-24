@@ -1,9 +1,5 @@
 <template>
   <section>
-    <SnackBar
-      v-bind:show="ShowSnackBar"
-      v-bind:color="SnackBarColor"
-      v-bind:text="SnackBarText"/>
 
     <v-data-table
       :headers="headers"
@@ -14,7 +10,7 @@
       <template v-slot:item.image="{item}">
         <v-avatar
         >
-          <img :src="`http://localhost:8000/storage/images/content/category/${item.image}`" alt="alt">
+          <img :src="imgURL+item.image" alt="alt">
         </v-avatar>
       </template>
       <template v-slot:top>
@@ -218,6 +214,8 @@
   import DeleteDialog from "../CustomComponent/DeleteDialog";
   import Base from "@/mixins/Base";
   import ValidationErrors from "@/mixins/ValidationErrors";
+  import Crud from "@/mixins/Crud";
+  import {mapState} from 'vuex'
 
 
   export default {
@@ -241,10 +239,6 @@
     },
 
     data: () => ({
-      ShowSnackBar: false,
-      SnackBarColor: '',
-      SnackBarText: '',
-
       imageFile: null,
       statusOptions: [
         'فعال',
@@ -281,6 +275,7 @@
     }),
 
     computed: {
+      ...mapState('Content/category', ['imgURL']),
       statusLabel() {
         return this.editedItem.status_text ? this.editedItem.status_text : 'وضعیت';
       },
@@ -304,33 +299,11 @@
         this.dialogDelete = true
 
       },
-
       deleteItemConfirm() {
-        this.$axios.$delete(`content/category/${this.editedItem.id}`, {
-          headers: {
-            'content-type': 'application/json',
-            'Accept': 'application/json'
-          }
-        })
-          .then((response => {
-            console.log(response);
-            if (response.status === 200) {
-              this.ShowSnackBar = true;
-              this.SnackBarColor = 'success';
-              this.SnackBarText = 'با موفقیت حذف شد';
-              this.$store.dispatch('Content/category/getAllPostCategories');
-            } else {
-              this.ShowSnackBar = true;
-              this.SnackBarColor = 'error';
-              this.SnackBarText = 'عملیات تاموفق';
-            }
-          })).catch((error) => {
-          this.ShowSnackBar = true;
-          this.SnackBarColor = 'error';
-          this.SnackBarText = 'عملیات ناموفق';
-          console.log(error)
-        });
-        this.closeDelete()
+        let path = 'content/category/';
+        Crud.delete(this.editedItem.id, this.$axios, path);
+        this.closeDelete();
+        this.$store.dispatch('Content/category/getAllPostCategories');
       },
 
       save() {
@@ -344,56 +317,16 @@
 
         if (this.editedIndex > -1) {
           formData.append('_method', 'PUT');
-          this.$axios.$post(`content/category/${this.editedItem.id}`, formData, {
-            headers: {
-              'content-type': 'multipart/form-data',
-              'Accept': 'application/json'
-            }
-          }).then((response => {
-            if (response.status === 200) {
-              console.log(response);
-
-              this.ShowSnackBar = true;
-              this.SnackBarColor = 'success';
-              this.SnackBarText = 'با موفقیت ویرایش شد';
-              this.$store.dispatch('Content/category/getAllPostCategories');
-            } else {
-              console.log(response);
-
-              this.ShowSnackBar = true;
-              this.SnackBarColor = 'error';
-              this.SnackBarText = 'عملیات ناموفق';
-            }
-          })).catch((error) => {
-            this.ShowSnackBar = true;
-            this.SnackBarColor = 'error';
-            this.SnackBarText = 'عملیات ناموفق';
-            console.log(error)
-          });
+          let path = 'content/category/';
+          Crud.update(formData, this.$axios, path, this.editedItem.id);
+          this.close();
+          this.$store.dispatch('Content/category/getAllPostCategories');
 
         } else {
-          this.$axios.$post('content/category/', formData, {
-            headers: {
-              'content-type': 'multipart/form-data'
-            }
-          }).then((response => {
-            console.log(response);
-            if (response.status === 200) {
-              this.ShowSnackBar = true;
-              this.SnackBarColor = 'success';
-              this.SnackBarText = 'با موفقیت ایجاد شد';
-              this.$store.dispatch('Content/category/getAllPostCategories');
-            } else {
-              this.ShowSnackBar = true;
-              this.SnackBarColor = 'error';
-              this.SnackBarText = 'عملیات ناموفق';
-            }
-          })).catch((error) => {
-            this.ShowSnackBar = true;
-            this.SnackBarColor = 'error';
-            this.SnackBarText = 'عملیات ناموفق';
-            console.log(error)
-          });
+          let path = 'content/category/';
+          Crud.store(formData, this.$axios, path);
+          this.close();
+          this.$store.dispatch('Content/category/getAllPostCategories');
         }
         this.close()
       }

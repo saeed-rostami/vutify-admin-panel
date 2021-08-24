@@ -1,6 +1,7 @@
 export const state = () => {
   return {
     allPosts: [],
+    imgURL: 'http://localhost:8000/storage/images/content/post/'
   }
 };
 

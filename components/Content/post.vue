@@ -1,9 +1,5 @@
 <template>
   <section>
-    <SnackBar
-      v-bind:show="ShowSnackBar"
-      v-bind:color="SnackBarColor"
-      v-bind:text="SnackBarText"/>
 
     <v-data-table
       :headers="headers"
@@ -15,7 +11,7 @@
       <template v-slot:item.image="{item}">
         <v-avatar
         >
-          <img :src="`http://localhost:8000/storage/images/content/post/${item.image}`" alt="alt">
+          <img :src="imgURL+item.image" alt="alt">
         </v-avatar>
       </template>
 
@@ -264,7 +260,8 @@
   import DeleteDialog from "../CustomComponent/DeleteDialog";
   import Base from "@/mixins/Base";
   import ValidationErrors from "@/mixins/ValidationErrors";
-  import {mapGetters} from 'vuex'
+  import Crud from "@/mixins/Crud";
+  import {mapState} from "vuex";
 
 
   let CKEditor;
@@ -307,10 +304,6 @@
 
 
     data: () => ({
-      ShowSnackBar: false,
-      SnackBarColor: '',
-      SnackBarText: '',
-
       postCategoriesID: [],
       postCategories: [],
       imageFile: null,
@@ -332,6 +325,7 @@
         {text: 'دسته بندی', value: 'category_text'},
         {text: 'تصویر', value: 'image'},
         {text: 'وضعیت', value: 'status_text'},
+        {text: 'اجازه نظر دهی', value: 'commentable_text'},
         {text: 'زمان انتشار', value: 'published_text'},
         {text: 'تنظیمات', value: 'actions', sortable: false},
       ],
@@ -346,6 +340,7 @@
         status: '',
         status_text: '',
         category_text: '',
+        commentable_text: '' ,
         commentable: '',
         summary: '',
         tags: [],
@@ -362,6 +357,7 @@
         status_text: '',
         category_text: '',
         commentable: '',
+        commentable_text: '' ,
         summary: '',
         tags: [],
 
@@ -374,6 +370,8 @@
     },
 
     computed: {
+      ...mapState('Content/post', ['imgURL']),
+
       statusLabel() {
         return this.editedItem.status_text ? this.editedItem.status_text : 'وضعیت';
       },
@@ -383,7 +381,7 @@
       },
 
       commentableLabel() {
-        return this.editedItem.status_text ? this.editedItem.status_text : 'وضعیت ارسال دیدگاه';
+        return this.editedItem.commentable_text ? this.editedItem.commentable_text : 'وضعیت ارسال دیدگاه';
       },
     },
 
@@ -405,31 +403,10 @@
       },
 
       deleteItemConfirm() {
-        this.$axios.$delete(`content/post/${this.editedItem.id}`, {
-          headers: {
-            'content-type': 'application/json',
-            'Accept': 'application/json'
-          }
-        })
-          .then((response => {
-            console.log(response);
-            if (response.status === 200) {
-              this.ShowSnackBar = true;
-              this.SnackBarColor = 'success';
-              this.SnackBarText = 'با موفقیت حذف شد';
-              this.$store.dispatch('Content/post/getAllPosts');
-            } else {
-              this.ShowSnackBar = true;
-              this.SnackBarColor = 'error';
-              this.SnackBarText = 'عملیات تاموفق';
-            }
-          })).catch((error) => {
-          this.ShowSnackBar = true;
-          this.SnackBarColor = 'error';
-          this.SnackBarText = 'عملیات ناموفق';
-          console.log(error)
-        });
-        this.closeDelete()
+        let path = 'content/post/';
+        Crud.delete(this.editedItem.id, this.$axios, path);
+        this.closeDelete();
+        this.$store.dispatch('Content/post/getAllPosts');
       },
 
       save() {
@@ -448,56 +425,15 @@
         console.log(...formData);
         if (this.editedIndex > -1) {
           formData.append('_method', 'PUT');
-          this.$axios.$post(`content/post/${this.editedItem.id}`, formData, {
-            headers: {
-              'content-type': 'multipart/form-data',
-              'Accept': 'application/json'
-            }
-          }).then((response => {
-            if (response.status === 200) {
-              console.log(response);
-
-              this.ShowSnackBar = true;
-              this.SnackBarColor = 'success';
-              this.SnackBarText = 'با موفقیت ویرایش شد';
-              this.$store.dispatch('Content/post/getAllPosts');
-            } else {
-              console.log(response);
-
-              this.ShowSnackBar = true;
-              this.SnackBarColor = 'error';
-              this.SnackBarText = 'عملیات ناموفق';
-            }
-          })).catch((error) => {
-            this.ShowSnackBar = true;
-            this.SnackBarColor = 'error';
-            this.SnackBarText = 'عملیات ناموفق';
-            console.log(error)
-          });
+          let path = 'content/post/';
+          Crud.update(formData, this.$axios, path, this.editedItem.id);
+          this.$store.dispatch('Content/post/getAllPosts');
+          this.close();
         } else {
-
-          this.$axios.$post('content/post/', formData, {
-            headers: {
-              'content-type': 'multipart/form-data'
-            }
-          }).then((response => {
-            console.log(response);
-            if (response.status === 200) {
-              this.ShowSnackBar = true;
-              this.SnackBarColor = 'success';
-              this.SnackBarText = 'با موفقیت ایجاد شد';
-              this.$store.dispatch('Content/post/getAllPosts');
-            } else {
-              this.ShowSnackBar = true;
-              this.SnackBarColor = 'error';
-              this.SnackBarText = 'عملیات ناموفق';
-            }
-          })).catch((error) => {
-            this.ShowSnackBar = true;
-            this.SnackBarColor = 'error';
-            this.SnackBarText = 'عملیات ناموفق';
-            console.log(error)
-          });
+          let path = 'content/post/';
+          Crud.store(formData, this.$axios, path);
+          this.$store.dispatch('Content/post/getAllPosts');
+          this.close();
         }
         this.close()
       },
