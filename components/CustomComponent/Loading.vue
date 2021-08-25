@@ -1,17 +1,15 @@
-<template>
-  <div>
-    <v-overlay>
-      <v-progress-circular
-        indeterminate
-        size="64"
-      ></v-progress-circular>
-    </v-overlay>
-  </div>
-</template>
-
+<template></template>
 <script>
+  import Notiflix from "notiflix";
+
   export default {
-    name: "Loading",
+    name: "Loding",
+    created() {
+      Notiflix.Loading.dots();
+    },
+    beforeDestroy() {
+      Notiflix.Loading.remove();
+    }
   }
 </script>
 

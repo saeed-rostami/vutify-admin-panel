@@ -26,7 +26,6 @@ export const actions = {
       }
     })
       .then(response => {
-        console.log(response);
         let AllPosts = response.posts;
         commit('SET_POSTS', AllPosts);
       })

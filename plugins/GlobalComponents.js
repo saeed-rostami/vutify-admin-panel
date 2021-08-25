@@ -1,10 +1,9 @@
 import Vue from 'vue'
 
-import Snackbar from '@/components/CustomComponent/SnackBar.vue'
 import Loading from "@/components/CustomComponent/Loading";
 import Select2 from 'vue-select';
 
-const components = {Snackbar, Loading};
+const components = { Loading};
 
 Object.entries(components).forEach(([name, component]) => {
   Vue.component(name, component)

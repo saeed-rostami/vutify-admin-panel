@@ -321,14 +321,16 @@
           Crud.update(formData, this.$axios, path, this.editedItem.id);
           this.close();
           this.$store.dispatch('Content/category/getAllPostCategories');
-
+          this.imageFile = null;
         } else {
           let path = 'content/category/';
           Crud.store(formData, this.$axios, path);
           this.close();
           this.$store.dispatch('Content/category/getAllPostCategories');
+          this.imageFile = null;
         }
-        this.close()
+        this.close();
+        this.imageFile = null;
       }
 
     },

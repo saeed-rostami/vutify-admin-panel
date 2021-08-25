@@ -427,13 +427,15 @@
           formData.append('_method', 'PUT');
           let path = 'content/post/';
           Crud.update(formData, this.$axios, path, this.editedItem.id);
-          this.$store.dispatch('Content/post/getAllPosts');
           this.close();
+          this.$store.dispatch('Content/post/getAllPosts');
+         this.imageFile = null;
         } else {
           let path = 'content/post/';
           Crud.store(formData, this.$axios, path);
-          this.$store.dispatch('Content/post/getAllPosts');
           this.close();
+          this.$store.dispatch('Content/post/getAllPosts');
+          this.imageFile = null;
         }
         this.close()
       },
