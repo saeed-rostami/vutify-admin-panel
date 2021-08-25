@@ -340,7 +340,7 @@
         status: '',
         status_text: '',
         category_text: '',
-        commentable_text: '' ,
+        commentable_text: '',
         commentable: '',
         summary: '',
         tags: [],
@@ -357,7 +357,7 @@
         status_text: '',
         category_text: '',
         commentable: '',
-        commentable_text: '' ,
+        commentable_text: '',
         summary: '',
         tags: [],
 
@@ -406,7 +406,10 @@
         let path = 'content/post/';
         Crud.delete(this.editedItem.id, this.$axios, path);
         this.closeDelete();
-        this.$store.dispatch('Content/post/getAllPosts');
+        let self = this;
+        setTimeout(() => {
+          self.$store.dispatch('Content/post/getAllPosts');
+        }, 2000);
       },
 
       save() {
@@ -428,13 +431,19 @@
           let path = 'content/post/';
           Crud.update(formData, this.$axios, path, this.editedItem.id);
           this.close();
-          this.$store.dispatch('Content/post/getAllPosts');
-         this.imageFile = null;
+          let self = this;
+          setTimeout(() => {
+            self.$store.dispatch('Content/post/getAllPosts');
+          }, 2000);
+          this.imageFile = null;
         } else {
           let path = 'content/post/';
           Crud.store(formData, this.$axios, path);
           this.close();
-          this.$store.dispatch('Content/post/getAllPosts');
+          let self = this;
+          setTimeout(() => {
+            self.$store.dispatch('Content/post/getAllPosts');
+          }, 2000);
           this.imageFile = null;
         }
         this.close()

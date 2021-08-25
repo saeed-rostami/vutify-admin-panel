@@ -16,9 +16,10 @@ $body-font-family: 'Vazir';
 
 @import "vue-select/src/scss/vue-select.scss";
 
-.vs__dropdown-toggle{
+.vs__dropdown-toggle {
   border-color: forestgreen !important;
 }
+
 .vs__search {
   color: forestgreen;
 }
@@ -29,9 +30,15 @@ $body-font-family: 'Vazir';
   border-radius: 15px !important;
 }
 
+.v-application .primary--text {
+  color: green !important;
+  caret-color: green !important;
+}
+
 .vpd-input-group {
   background-color: antiquewhite !important;
 }
-.vpd-body{
+
+.vpd-body {
   background-color: black !important;
 }

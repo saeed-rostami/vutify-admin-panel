@@ -52,21 +52,23 @@
     }),
 
 
-    async asyncData({store}) {
+    async fetch() {
       try {
-        await store.dispatch('Content/category/getAllPostCategories');
+        await this.$store.dispatch('Content/category/getAllPostCategories');
+        await this.$store.dispatch('Content/post/getAllPosts');
+
       } catch (e) {
         console.log(e)
       }
     },
 
-    async fetch() {
-      try {
-        await this.$store.dispatch('Content/post/getAllPosts');
-      } catch (e) {
-        console.log(e)
-      }
-    },
+    // async fetch() {
+    //   try {
+    //     await this.$store.dispatch('Content/post/getAllPosts');
+    //   } catch (e) {
+    //     console.log(e)
+    //   }
+    // },
 
     computed: {
       ...mapGetters('Content/category', ['GET_POST_CATEGORIES']),

@@ -215,7 +215,7 @@
   import Base from "@/mixins/Base";
   import ValidationErrors from "@/mixins/ValidationErrors";
   import Crud from "@/mixins/Crud";
-  import {mapState} from 'vuex'
+  import {mapGetters, mapState} from 'vuex'
 
 
   export default {
@@ -276,6 +276,12 @@
 
     computed: {
       ...mapState('Content/category', ['imgURL']),
+
+      // ...mapGetters('Content/category', {
+      //   categories : "GET_POST_CATEGORIES"
+      // }),
+
+
       statusLabel() {
         return this.editedItem.status_text ? this.editedItem.status_text : 'وضعیت';
       },
@@ -303,7 +309,10 @@
         let path = 'content/category/';
         Crud.delete(this.editedItem.id, this.$axios, path);
         this.closeDelete();
-        this.$store.dispatch('Content/category/getAllPostCategories');
+        let self = this;
+        setTimeout(() => {
+          self.$store.dispatch('Content/category/getAllPostCategories');
+        }, 2000);
       },
 
       save() {
@@ -320,14 +329,23 @@
           let path = 'content/category/';
           Crud.update(formData, this.$axios, path, this.editedItem.id);
           this.close();
-          this.$store.dispatch('Content/category/getAllPostCategories');
           this.imageFile = null;
+
+          let self = this;
+          setTimeout(() => {
+            self.$store.dispatch('Content/category/getAllPostCategories');
+          }, 2000);
         } else {
           let path = 'content/category/';
           Crud.store(formData, this.$axios, path);
           this.close();
-          this.$store.dispatch('Content/category/getAllPostCategories');
+
           this.imageFile = null;
+
+          let self = this;
+          setTimeout(() => {
+            self.$store.dispatch('Content/category/getAllPostCategories');
+          }, 2000);
         }
         this.close();
         this.imageFile = null;

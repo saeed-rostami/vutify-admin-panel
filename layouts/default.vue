@@ -7,9 +7,9 @@
       right
       temporary
     >
-      <v-list color="text--success">
+      <v-list>
         <v-list-item to="/">
-          <v-icon color="success" right>mdi-home</v-icon>
+          <v-icon class="success--text" right>mdi-home</v-icon>
           <v-list-item-title class="success--text">خانه</v-list-item-title>
         </v-list-item>
 
