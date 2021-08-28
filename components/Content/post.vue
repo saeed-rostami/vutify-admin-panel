@@ -216,7 +216,7 @@
                 <v-btn
                   color="blue darken-1"
                   text
-                  @click="save"
+                  @click="submitForm"
                 >
                   ایجاد
                 </v-btn>
@@ -417,7 +417,7 @@
         let formData = new FormData();
         formData.append('image', this.imageFile);
         formData.append('title', this.editedItem.title);
-        formData.append('category', this.editedItem.category_id);
+        formData.append('category_id', this.editedItem.category_id);
         formData.append('body', this.editedItem.body);
         formData.append('status', this.editedItem.status);
         formData.append('commentable', this.editedItem.commentable);

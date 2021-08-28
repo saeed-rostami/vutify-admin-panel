@@ -1,5 +1,11 @@
 export default {
 
+  data: () => ({
+    statusOptions: [
+      'فعال',
+      'غیر فعال'
+    ],
+  }),
   //COMPUTES
   computed: {
     isDisabled() {
@@ -47,8 +53,6 @@ export default {
         this.editedIndex = -1
       })
     },
-
-
 
 
   }

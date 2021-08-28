@@ -20,9 +20,14 @@ export default {
     categoryErrors() {
       const errors = [];
       if (!this.$v.editedItem.category_id.$dirty) return errors;
-
-
       !this.$v.editedItem.category_id.required && errors.push(' دسته بندی الزامی است');
+      return errors
+    },
+
+    parentErrors() {
+      const errors = [];
+      if (!this.$v.editedItem.parent_id.$dirty) return errors;
+      !this.$v.editedItem.parent_id.required && errors.push(' نام والد الزامی است');
       return errors
     },
 
@@ -65,5 +70,14 @@ export default {
       !this.$v.editedItem.commentable.required && errors.push(' اجازه ارسال دیدگاه الزامی است');
       return errors
     },
+
+    urlErrors() {
+      const errors = [];
+      if (!this.$v.editedItem.url.$dirty) return errors;
+
+      !this.$v.editedItem.url.required && errors.push('لینک الزامی است');
+      return errors
+    },
+
   }
 }

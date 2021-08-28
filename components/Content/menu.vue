@@ -38,42 +38,45 @@
                   </v-col>
                   <v-col cols="12" sm="6" md="6">
                     <v-select
-                      v-model="editedItem.category"
-                      label="منو والد"
-                      v-bind:items="selectOptions"
-                      :error-messages="categoryErrors"
-                      required
-                      @change="$v.editedItem.category.$touch()"
-                      @blur="$v.editedItem.category.$touch"
-                      v-model:trim="$v.editedItem.category.$model"
+                      clearable
+                      v-model="editedItem.parent_id"
+                      v-bind:label="parentsLabel"
+                      v-bind:items="parentsCategory"
+
                     >
 
                       >
                     </v-select>
                   </v-col>
                   <v-col cols="12" sm="6" md="6">
-                    <v-text-field v-model="editedItem.link"
+                    <v-text-field v-model="editedItem.url"
                                   label="لینک منو"
-                                  :error-messages="linkErrors"
+                                  :error-messages="urlErrors"
                                   required
-                                  @input="$v.editedItem.link.$touch()"
-                                  @blur="$v.editedItem.link.$touch()"
-                                  v-model:trim="$v.editedItem.link.$model"
+                                  @input="$v.editedItem.url.$touch()"
+                                  @blur="$v.editedItem.url.$touch()"
+                                  v-model:trim="$v.editedItem.url.$model"
                     >
 
                     </v-text-field>
                   </v-col>
 
-                  <v-col cols="12" sm="6" md="6">
-                    <v-file-input
-                      v-model="editedItem.image"
-                      :error-messages="imageErrors"
-                      label="تصویر"
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-select
+                      v-model="editedItem.status"
+                      v-bind:label="statusLabel"
+                      :error-messages="statusErrors"
                       required
-                      @input="$v.editedItem.image.$touch()"
-                      @blur="$v.editedItem.image.$touch()"
-                      v-model:trim="$v.editedItem.image.$model"
-                    ></v-file-input>
+                      @change="$v.editedItem.status.$touch()"
+                      @blur="$v.editedItem.status.$touch"
+                      v-bind:items="statusOptions"
+                      v-model:trim="$v.editedItem.status.$model"
+                    >
+                    </v-select>
                   </v-col>
 
                 </v-row>
@@ -82,8 +85,16 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
+              <v-btn
+                :disabled='isDisabled'
+                color="success"
+                text
+                @click="clearValidation"
+              >
+                پاک کردن خطاها
+              </v-btn>
               <v-btn color="blue darken-1" text @click="close"> لغو</v-btn>
-              <v-btn color="blue darken-1" text @click="save"> ایجاد</v-btn>
+              <v-btn color="blue darken-1" text @click="submitForm"> ایجاد</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -114,7 +125,7 @@
 
 
     <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize"> Reset</v-btn>
+      <h1 class="font-weight-bold">هیچ محتوایی وجود ندارد</h1>
     </template>
 
 
@@ -129,109 +140,81 @@
   import {required} from 'vuelidate/lib/validators'
   import ActionIcon from "../CustomComponent/ActionIcon";
   import DeleteDialog from "../CustomComponent/DeleteDialog";
+  import Base from "@/mixins/Base";
+  import ValidationErrors from "@/mixins/ValidationErrors";
+  import Crud from "@/mixins/Crud";
 
   export default {
     components: {DeleteDialog, ActionIcon},
-    mixins: [validationMixin],
+    mixins: [validationMixin, Base, ValidationErrors],
 
     validations: {
       editedItem: {
         name: {required},
-        category: {required},
-        link: {required},
-        image: {required},
+        // parent_id: {required},
+        url: {required},
+        status: {required},
+      }
+    },
+
+    props: {
+      menus: {
+        type: Array,
+        required: false
       }
     },
 
     data: () => ({
-      selectOptions: ['Foo', 'Bar', 'Fizz', 'Buzz'],
+      parents: [],
       dialog: false,
       dialogDelete: false,
       headers: [
         {text: "#", value: "id"},
         {text: "نام", value: "name"},
-        {text: "منو والد", value: "category"},
-        {text: "لینک منو", value: "link"},
+        {text: "منو والد", value: "parent_text"},
+        {text: "لینک منو", value: "url"},
+        {text: " وضعیت", value: "status_text"},
         {text: "تنظیمات", value: "actions", sortable: false},
       ],
-      menus: [],
       editedIndex: -1,
       editedItem: {
         name: "",
-        category: "",
-        link: "",
-        image: [],
+        parent_id: "",
+        parent_text: "",
+        url: "",
+        status: "",
+        status_text: "",
       },
       defaultItem: {
         name: "",
-        category: "",
-        link: "",
-        image: [],
+        parent_text: "",
+        url: "",
+        status: "",
+        status_text: "",
+
       },
     }),
 
+    mounted() {
+      this.parents = this.menus.map(({name}) => name);
+    },
+
     computed: {
-      nameErrors() {
-        const errors = [];
-        if (!this.$v.editedItem.name.$dirty) return errors;
-
-        !this.$v.editedItem.name.required && errors.push('نام الزامی است');
-        return errors
+      parentsCategory : function() {
+       return this.parents = this.menus.map(({name}) => name);
       },
 
-      categoryErrors() {
-        const errors = []
-        if (!this.$v.editedItem.category.$dirty) return errors;
-
-        !this.$v.editedItem.category.required && errors.push(' دسته بندی الزامی است');
-        return errors
-      },
-      imageErrors() {
-        const errors = [];
-        if (!this.$v.editedItem.image.$dirty) return errors;
-
-        !this.$v.editedItem.image.required && errors.push('تصویر الزامی است');
-        return errors
+      parentsLabel() {
+        return this.editedItem.parent_text ? this.editedItem.parent_text : ' منو والد';
       },
 
-      linkErrors() {
-        const errors = [];
-        if (!this.$v.editedItem.link.$dirty) return errors;
-
-        !this.$v.editedItem.link.required && errors.push('لینک الزامی است');
-        return errors
-      },
-      formTitle() {
-        return this.editedIndex === -1 ? "ایجاد" : "ویرایش";
+      statusLabel() {
+        return this.editedItem.status_text ? this.editedItem.status_text : 'وضعیت';
       },
     },
 
-    watch: {
-      dialog(val) {
-        val || this.close();
-      },
-      dialogDelete(val) {
-        val || this.closeDelete();
-      },
-    },
-
-    created() {
-      this.initialize();
-    },
 
     methods: {
-      initialize() {
-        this.menus = [
-          {
-            id: "1",
-            name: "Iphone",
-            category: "الکترونیکی",
-            link: "example",
-            image: "example",
-          },
-        ];
-      },
-
       editItem(item) {
         this.editedIndex = this.menus.indexOf(item);
         this.editedItem = Object.assign({}, item);
@@ -245,35 +228,47 @@
       },
 
       deleteItemConfirm() {
-        this.menus.splice(this.editedIndex, 1);
+        let path = 'content/menu/';
+        Crud.delete(this.editedItem.id, this.$axios, path);
         this.closeDelete();
+        let self = this;
+        setTimeout(() => {
+          self.$store.dispatch('Content/menu/getAllMenus');
+        }, 2000);
       },
 
-      close() {
-        this.dialog = false;
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem);
-          this.editedIndex = -1;
-        });
-      },
-
-      closeDelete() {
-        this.dialogDelete = false;
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem);
-          this.editedIndex = -1;
-        });
-      },
 
       save() {
+        let formData = new FormData();
+        formData.append('name', this.editedItem.name);
+        formData.append('url', this.editedItem.url);
+        formData.append('status', this.editedItem.status);
+        formData.append('parent_id', this.editedItem.parent_id);
+
+        console.log(...formData);
         if (this.editedIndex > -1) {
-          Object.assign(this.menus[this.editedIndex], this.editedItem);
+          formData.append('_method', 'PUT');
+          let path = 'content/menu/';
+          Crud.update(formData, this.$axios, path, this.editedItem.id);
+          this.close();
+          let self = this;
+          // formData.delete('parent_id');
+          setTimeout(() => {
+            self.$store.dispatch('Content/menu/getAllMenus');
+          }, 2000);
         } else {
-          this.menus.push(this.editedItem);
+          let path = 'content/menu/';
+          Crud.store(formData, this.$axios, path);
+          this.close();
+          // formData.delete('parent_id');
+          let self = this;
+          setTimeout(() => {
+            self.$store.dispatch('Content/menu/getAllMenus');
+          }, 2000);
         }
         this.close();
       },
-    },
+    }
   };
 </script>
 
