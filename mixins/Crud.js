@@ -14,7 +14,7 @@ class Crud {
       .then((response => {
         Notiflix.Loading.remove();
         console.log(response);
-        if (response.status === 200) {
+        if (response.status === 204) {
           Notiflix.Notify.success(
             "   عملیات موفقیت آمیز",
             {
@@ -45,7 +45,7 @@ class Crud {
       .then((response => {
         Notiflix.Loading.remove();
         console.log(response);
-        if (response.status === 200) {
+        if (response.status === 201) {
           Notiflix.Notify.success(
             "   عملیات موفقیت آمیز",
             {
@@ -77,7 +77,7 @@ class Crud {
       .then((response => {
         Notiflix.Loading.remove();
         console.log(response);
-        if (response.status === 200) {
+        if (response.status === 204) {
           Notiflix.Notify.success(
             "   عملیات موفقیت آمیز",
             {
