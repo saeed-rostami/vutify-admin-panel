@@ -20,7 +20,7 @@
 
 
     <Loading v-if="$fetchState.pending"/>
-    <index />
+    <index v-else v-bind:faqs="GET_FAQS"/>
 
   </section>
 </template>

@@ -24,26 +24,59 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-col cols="12" sm="12" md="12">
-                    <v-text-field
+                  <v-col cols="12" sm="12" md="8">
+                    <v-textarea
                       v-model="editedItem.question"
                       label="پرسش"
                       :error-messages="questionErrors"
-                      :counter="32"
+                      auto-grow
+                      outlined
+                      rows="3"
+                      row-height="25"
+                      shaped
                       required
                       @input="$v.editedItem.question.$touch()"
                       @blur="$v.editedItem.question.$touch()"
                       v-model:trim="$v.editedItem.question.$model"
-                    ></v-text-field>
+                    ></v-textarea>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-select
+                      v-model="editedItem.status"
+                      v-bind:label="statusLabel"
+                      :error-messages="statusErrors"
+                      required
+                      @change="$v.editedItem.status.$touch()"
+                      @blur="$v.editedItem.status.$touch"
+                      v-bind:items="statusOptions"
+                      v-model:trim="$v.editedItem.status.$model"
+                    >
+                    </v-select>
                   </v-col>
                   <v-col cols="12" sm="12" md="12">
                     <label>پاسخ</label>
-                    <!--<ckeditor v-model="editedItem.answer" v-bind:config="ckConfig"/>-->
-                    <!--<v-text-field v-model="editedItem.answer"-->
-                    <!--label="خلاصه پاسخ" v-bind:items="selectOptions">-->
+                    <ckeditor v-model="editedItem.answer" v-bind:config="ckConfig"/>
+                  </v-col>
 
-                    <!--&gt;-->
-                    <!--</v-text-field>-->
+                  <v-col
+                    cols="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <client-only>
+                      <Select2
+                        class="style-chooser"
+                        multiple
+                        taggable
+                        v-model="editedItem.tags"
+                        label="name"
+                        placeholder="برچسب ها..."
+                      />
+                    </client-only>
                   </v-col>
 
 
@@ -95,7 +128,7 @@
 
 
     <template v-slot:no-data>
-      <h1 class="font-weight-bold">هیچ محتوایی وجود ندارد</h1>
+      <v-btn color="primary" @click="initialize"> Reset</v-btn>
     </template>
 
 
@@ -118,18 +151,11 @@
     CKEditor = require("ckeditor4-vue")
   }
   export default {
-    name : 'faq',
-    mixins: [validationMixin, Base, ValidationErrors, Crud],
+    mixins: [validationMixin, Base, ValidationErrors],
 
-    // props: {
-    //   faqs: {
-    //     type: Array
-    //   }
-    // },
     validations: {
       editedItem: {
         question: {required},
-        answer: {required},
         status: {required},
       }
     },
@@ -138,9 +164,13 @@
       ActionIcon,
       ckeditor: process.browser ? CKEditor.component : null,
     },
-
+    props: {
+      faqs: {
+        type: Array,
+        required: false
+      }
+    },
     data: () => ({
-      faqs : [],
       ckConfig: {
         language: 'fa',
       },
@@ -152,30 +182,36 @@
         {text: "پرسش", value: "question"},
         {text: "خلاصه پاسخ", value: "answer"},
         {text: 'وضعیت', value: 'status_text'},
+
         {text: "تنظیمات", value: "actions", sortable: false},
       ],
       editedIndex: -1,
       editedItem: {
         question: "",
         answer: "",
+        status: "",
         status_text: "",
+        tags: [],
+
       },
       defaultItem: {
         question: "",
-        status_text: "",
         answer: "",
+        status: "",
+        status_text: "",
+        tags: [],
 
       },
     }),
 
-    // computed: {
-    //   statusLabel() {
-    //     return this.editedItem.status_text ? this.editedItem.status_text : 'وضعیت';
-    //   },
-    // },
-
+    computed: {
+      statusLabel() {
+        return this.editedItem.status_text ? this.editedItem.status_text : 'وضعیت';
+      },
+    },
 
     methods: {
+
       editItem(item) {
         this.editedIndex = this.faqs.indexOf(item);
         this.editedItem = Object.assign({}, item);
@@ -189,15 +225,40 @@
       },
 
       deleteItemConfirm() {
-        this.faqs.splice(this.editedIndex, 1);
+        let path = 'content/faq/';
+        Crud.delete(this.editedItem.id, this.$axios, path);
         this.closeDelete();
+        let self = this;
+        setTimeout(() => {
+          self.$store.dispatch('Content/faq/getAllFaqs');
+        }, 2000);
       },
 
       save() {
+        this.clearValidation();
+        let formData = new FormData();
+        formData.append('question', this.editedItem.question);
+        formData.append('answer', this.editedItem.answer);
+        formData.append('status', this.editedItem.status);
+        formData.append('tags', this.editedItem.tags);
+        console.log(...formData);
         if (this.editedIndex > -1) {
-          Object.assign(this.faqs[this.editedIndex], this.editedItem);
+          formData.append('_method', 'PUT');
+          let path = 'content/faq/';
+          Crud.update(formData, this.$axios, path, this.editedItem.id);
+          this.close();
+          let self = this;
+          setTimeout(() => {
+            self.$store.dispatch('Content/faq/getAllFaqs');
+          }, 2000);
         } else {
-          this.faqs.push(this.editedItem);
+          let path = 'content/faq/';
+          Crud.store(formData, this.$axios, path);
+          this.close();
+          let self = this;
+          setTimeout(() => {
+            self.$store.dispatch('Content/faq/getAllFaqs');
+          }, 2000);
         }
         this.close();
       },

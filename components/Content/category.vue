@@ -240,10 +240,6 @@
 
     data: () => ({
       imageFile: null,
-      statusOptions: [
-        'فعال',
-        'غیر فعال'
-      ],
       dialog: false,
       dialogDelete: false,
       headers: [
