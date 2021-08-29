@@ -12,7 +12,7 @@
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="1200">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+            <v-btn color="success" dark class="mb-2" v-bind="attrs" v-on="on">
               ایجاد
             </v-btn>
           </template>
@@ -38,7 +38,7 @@
                   </v-col>
                   <v-col cols="12" sm="12" md="12">
                     <label>پاسخ</label>
-                    <ckeditor v-model="editedItem.answer" v-bind:config="ckConfig"/>
+                    <!--<ckeditor v-model="editedItem.answer" v-bind:config="ckConfig"/>-->
                     <!--<v-text-field v-model="editedItem.answer"-->
                     <!--label="خلاصه پاسخ" v-bind:items="selectOptions">-->
 
@@ -53,8 +53,16 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
+              <v-btn
+                :disabled='isDisabled'
+                color="success"
+                text
+                @click="clearValidation"
+              >
+                پاک کردن خطاها
+              </v-btn>
               <v-btn color="blue darken-1" text @click="close"> لغو</v-btn>
-              <v-btn color="blue darken-1" text @click="save"> ایجاد</v-btn>
+              <v-btn color="blue darken-1" text @click="submitForm"> ایجاد</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -87,7 +95,7 @@
 
 
     <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize"> Reset</v-btn>
+      <h1 class="font-weight-bold">هیچ محتوایی وجود ندارد</h1>
     </template>
 
 
@@ -101,17 +109,28 @@
   import {required} from 'vuelidate/lib/validators'
   import ActionIcon from "../CustomComponent/ActionIcon";
   import DeleteDialog from "../CustomComponent/DeleteDialog";
+  import Base from "@/mixins/Base";
+  import ValidationErrors from "@/mixins/ValidationErrors";
+  import Crud from "@/mixins/Crud";
 
   let CKEditor;
   if (process.browser) {
     CKEditor = require("ckeditor4-vue")
   }
   export default {
-    mixins: [validationMixin],
+    name : 'faq',
+    mixins: [validationMixin, Base, ValidationErrors, Crud],
 
+    // props: {
+    //   faqs: {
+    //     type: Array
+    //   }
+    // },
     validations: {
       editedItem: {
         question: {required},
+        answer: {required},
+        status: {required},
       }
     },
     components: {
@@ -119,7 +138,9 @@
       ActionIcon,
       ckeditor: process.browser ? CKEditor.component : null,
     },
+
     data: () => ({
+      faqs : [],
       ckConfig: {
         language: 'fa',
       },
@@ -130,58 +151,31 @@
         {text: "#", value: "id"},
         {text: "پرسش", value: "question"},
         {text: "خلاصه پاسخ", value: "answer"},
-
+        {text: 'وضعیت', value: 'status_text'},
         {text: "تنظیمات", value: "actions", sortable: false},
       ],
-      faqs: [],
       editedIndex: -1,
       editedItem: {
         question: "",
         answer: "",
-
+        status_text: "",
       },
       defaultItem: {
         question: "",
+        status_text: "",
+        answer: "",
+
       },
     }),
 
-    computed: {
-      questionErrors() {
-        const errors = []
-        if (!this.$v.editedItem.question.$dirty) return errors;
+    // computed: {
+    //   statusLabel() {
+    //     return this.editedItem.status_text ? this.editedItem.status_text : 'وضعیت';
+    //   },
+    // },
 
-        !this.$v.editedItem.question.required && errors.push(' پرسش الزامی است');
-        return errors
-      },
-      formTitle() {
-        return this.editedIndex === -1 ? "ایجاد" : "ویرایش";
-      },
-    },
-
-    watch: {
-      dialog(val) {
-        val || this.close();
-      },
-      dialogDelete(val) {
-        val || this.closeDelete();
-      },
-    },
-
-    created() {
-      this.initialize();
-    },
 
     methods: {
-      initialize() {
-        this.faqs = [
-          {
-            id: "1",
-            question: "Iphone",
-            answer: "الکترونیکی",
-          },
-        ];
-      },
-
       editItem(item) {
         this.editedIndex = this.faqs.indexOf(item);
         this.editedItem = Object.assign({}, item);
@@ -197,22 +191,6 @@
       deleteItemConfirm() {
         this.faqs.splice(this.editedIndex, 1);
         this.closeDelete();
-      },
-
-      close() {
-        this.dialog = false;
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem);
-          this.editedIndex = -1;
-        });
-      },
-
-      closeDelete() {
-        this.dialogDelete = false;
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem);
-          this.editedIndex = -1;
-        });
       },
 
       save() {

@@ -79,5 +79,13 @@ export default {
       return errors
     },
 
+    questionErrors() {
+      const errors = [];
+      if (!this.$v.editedItem.question.$dirty) return errors;
+
+      !this.$v.editedItem.question.required && errors.push(' پرسش الزامی است');
+      return errors
+    },
+
   }
 }

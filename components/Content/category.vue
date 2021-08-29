@@ -215,7 +215,7 @@
   import Base from "@/mixins/Base";
   import ValidationErrors from "@/mixins/ValidationErrors";
   import Crud from "@/mixins/Crud";
-  import {mapGetters, mapState} from 'vuex'
+  import { mapState} from 'vuex'
 
 
   export default {
@@ -276,10 +276,6 @@
 
     computed: {
       ...mapState('Content/category', ['imgURL']),
-
-      // ...mapGetters('Content/category', {
-      //   categories : "GET_POST_CATEGORIES"
-      // }),
 
 
       statusLabel() {
