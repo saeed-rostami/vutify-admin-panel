@@ -145,7 +145,7 @@
   import DeleteDialog from "../CustomComponent/DeleteDialog";
   import Base from "@/mixins/Base";
   import ValidationErrors from "@/mixins/ValidationErrors";
-  import Crud from "@/mixins/Crud";
+  import Crud from "@/classes/Crud";
 
   let CKEditor;
   if (process.browser) {
@@ -175,7 +175,6 @@
       ckConfig: {
         language: 'fa',
       },
-      selectOptions: ['Foo', 'Bar', 'Fizz', 'Buzz'],
       dialog: false,
       dialogDelete: false,
       headers: [

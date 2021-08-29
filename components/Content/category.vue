@@ -214,7 +214,7 @@
   import DeleteDialog from "../CustomComponent/DeleteDialog";
   import Base from "@/mixins/Base";
   import ValidationErrors from "@/mixins/ValidationErrors";
-  import Crud from "@/mixins/Crud";
+  import Crud from "@/classes/Crud";
   import { mapState} from 'vuex'
 
 
