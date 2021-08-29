@@ -372,10 +372,6 @@
     computed: {
       ...mapState('Content/post', ['imgURL']),
 
-      statusLabel() {
-        return this.editedItem.status_text ? this.editedItem.status_text : 'وضعیت';
-      },
-
       categoryLabel() {
         return this.editedItem.category_text ? this.editedItem.category_text : 'دسته بندی';
       },

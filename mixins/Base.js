@@ -8,6 +8,9 @@ export default {
   }),
   //COMPUTES
   computed: {
+    statusLabel() {
+      return this.editedItem.status_text ? this.editedItem.status_text : 'وضعیت';
+    },
     isDisabled() {
       return !this.$v.$anyError;
     },

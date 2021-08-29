@@ -2,17 +2,17 @@
   <v-data-table
     :headers="headers"
     :items="pages"
-    sort-by="name"
+    sort-by="question"
     class="elevation-1"
   >
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title> پیج ساز</v-toolbar-title>
+        <v-toolbar-title>پیج ها</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
         <v-dialog v-model="dialog" max-width="1200">
           <template v-slot:activator="{ on, attrs }">
-            <v-btn color="primary" dark class="mb-2" v-bind="attrs" v-on="on">
+            <v-btn color="success" dark class="mb-2" v-bind="attrs" v-on="on">
               ایجاد
             </v-btn>
           </template>
@@ -24,48 +24,58 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-col cols="12" sm="6" md="4">
+                  <v-col cols="12" sm="6" md="8">
                     <v-text-field
-                      v-model="editedItem.name"
-                      :error-messages="nameErrors"
+                      v-model="editedItem.title"
+                      :error-messages="titleErrors"
                       :counter="32"
                       label="نام"
                       required
-                      @input="$v.editedItem.name.$touch()"
-                      @blur="$v.editedItem.name.$touch()"
-                      v-model:trim="$v.editedItem.name.$model"
+                      @input="$v.editedItem.title.$touch()"
+                      @blur="$v.editedItem.title.$touch()"
+                      v-model:trim="$v.editedItem.title.$model"
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="12" sm="6" md="4">
-                    <v-text-field
-                      v-model="editedItem.address"
-                      label="آدرس صفحه"
-                      :error-messages="addressErrors"
+
+                  <v-col
+                    cols="12"
+                    sm="6"
+                    md="4"
+                  >
+                    <v-select
+                      v-model="editedItem.status"
+                      v-bind:label="statusLabel"
+                      :error-messages="statusErrors"
                       required
-                      @input="$v.editedItem.address.$touch()"
-                      @blur="$v.editedItem.address.$touch()"
-                      v-model:trim="$v.editedItem.address.$model"
-
+                      @change="$v.editedItem.status.$touch()"
+                      @blur="$v.editedItem.status.$touch"
+                      v-bind:items="statusOptions"
+                      v-model:trim="$v.editedItem.status.$model"
                     >
-
-                      >
-                    </v-text-field>
+                    </v-select>
+                  </v-col>
+                  <v-col cols="12" sm="12" md="12">
+                    <label>پاسخ</label>
+                    <ckeditor v-model="editedItem.body" v-bind:config="ckConfig"/>
                   </v-col>
 
-                  <v-col cols="12">
-
-                    <label>محتوا</label>
-                    <ckeditor v-model="editedItem.description" v-bind:config="ckConfig"/>
-                    <!--<v-textarea-->
-                    <!--v-model="editedItem.description"-->
-                    <!--label="توضیحات"-->
-                    <!--auto-grow-->
-                    <!--outlined-->
-                    <!--rows="3"-->
-                    <!--row-height="25"-->
-                    <!--shaped-->
-                    <!--&gt;</v-textarea>-->
+                  <v-col
+                    cols="12"
+                    sm="12"
+                    md="12"
+                  >
+                    <client-only>
+                      <Select2
+                        class="style-chooser"
+                        multiple
+                        taggable
+                        v-model="editedItem.tags"
+                        label="name"
+                        placeholder="برچسب ها..."
+                      />
+                    </client-only>
                   </v-col>
+
 
                 </v-row>
               </v-container>
@@ -73,8 +83,16 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
+              <v-btn
+                :disabled='isDisabled'
+                color="success"
+                text
+                @click="clearValidation"
+              >
+                پاک کردن خطاها
+              </v-btn>
               <v-btn color="blue darken-1" text @click="close"> لغو</v-btn>
-              <v-btn color="blue darken-1" text @click="save"> ایجاد</v-btn>
+              <v-btn color="blue darken-1" text @click="submitForm"> ایجاد</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -87,13 +105,13 @@
       </v-toolbar>
     </template>
     <template v-slot:item.actions="{ item }">
+
       <ActionIcon
         v-bind:icon="`mdi-pencil`"
         v-bind:tooltip="`ویرایش`"
         v-bind:item="item"
         v-on:click="editItem(item)"
       />
-
 
       <ActionIcon
         v-bind:icon="`mdi-delete`"
@@ -102,11 +120,12 @@
         v-on:click="deleteItem(item)"
       />
 
+
     </template>
 
 
     <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize"> Reset</v-btn>
+      <h1 class="font-weight-bold">هیچ محتوایی وجود ندارد</h1>
     </template>
 
 
@@ -120,100 +139,75 @@
   import {required} from 'vuelidate/lib/validators'
   import ActionIcon from "../CustomComponent/ActionIcon";
   import DeleteDialog from "../CustomComponent/DeleteDialog";
+  import Base from "@/mixins/Base";
+  import ValidationErrors from "@/mixins/ValidationErrors";
+  import Crud from "@/mixins/Crud";
 
   let CKEditor;
   if (process.browser) {
     CKEditor = require("ckeditor4-vue")
   }
   export default {
+    mixins: [validationMixin, Base, ValidationErrors],
+
+    validations: {
+      editedItem: {
+        title: {required},
+        status: {required},
+      }
+    },
     components: {
       DeleteDialog,
       ActionIcon,
       ckeditor: process.browser ? CKEditor.component : null,
     },
-
-    mixins: [validationMixin],
-
-    validations: {
-      editedItem: {
-        name: {required},
-        address: {required},
+    props: {
+      pages: {
+        type: Array,
+        required: false
       }
     },
     data: () => ({
       ckConfig: {
         language: 'fa',
       },
-      selectOptions: ['Foo', 'Bar', 'Fizz', 'Buzz'],
+
       dialog: false,
       dialogDelete: false,
       headers: [
         {text: "#", value: "id"},
-        {text: "نام", value: "name"},
-        {text: "آدرس صفحه", value: "address"},
+        {text: "نام", value: "title"},
+        {text: "خلاصه پاسخ", value: "body"},
+        {text: 'وضعیت', value: 'status_text'},
 
         {text: "تنظیمات", value: "actions", sortable: false},
       ],
-      pages: [],
       editedIndex: -1,
       editedItem: {
-        name: "",
-        address: "",
-        description: "",
+        title: "",
+        body: "",
+        status: "",
+        status_text: "",
+        tags: [],
 
       },
       defaultItem: {
-        name: "",
-        address: "",
-        description: "",
+        title: "",
+        body: "",
+        status: "",
+        status_text: "",
+        tags: [],
 
       },
     }),
 
     computed: {
-      nameErrors() {
-        const errors = [];
-        if (!this.$v.editedItem.name.$dirty) return errors;
-
-        !this.$v.editedItem.name.required && errors.push('نام الزامی است');
-        return errors
-      },
-
-      addressErrors() {
-        const errors = [];
-        if (!this.$v.editedItem.address.$dirty) return errors;
-
-        !this.$v.editedItem.address.required && errors.push('آدرس صفحه الزامی است');
-        return errors
-      },
-      formTitle() {
-        return this.editedIndex === -1 ? "ایجاد" : "ویرایش";
-      },
-    },
-
-    watch: {
-      dialog(val) {
-        val || this.close();
-      },
-      dialogDelete(val) {
-        val || this.closeDelete();
-      },
-    },
-
-    created() {
-      this.initialize();
+      // statusLabel() {
+      //   return this.editedItem.status_text ? this.editedItem.status_text : 'وضعیت';
+      // },
     },
 
     methods: {
-      initialize() {
-        this.pages = [
-          {
-            id: "1",
-            name: "Iphone",
-            address: "الکترونیکی",
-          },
-        ];
-      },
 
       editItem(item) {
         this.editedIndex = this.pages.indexOf(item);
@@ -228,31 +222,40 @@
       },
 
       deleteItemConfirm() {
-        this.pages.splice(this.editedIndex, 1);
+        let path = 'content/page/';
+        Crud.delete(this.editedItem.id, this.$axios, path);
         this.closeDelete();
-      },
-
-      close() {
-        this.dialog = false;
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem);
-          this.editedIndex = -1;
-        });
-      },
-
-      closeDelete() {
-        this.dialogDelete = false;
-        this.$nextTick(() => {
-          this.editedItem = Object.assign({}, this.defaultItem);
-          this.editedIndex = -1;
-        });
+        let self = this;
+        setTimeout(() => {
+          self.$store.dispatch('Content/page/getAllPages');
+        }, 2000);
       },
 
       save() {
+        this.clearValidation();
+        let formData = new FormData();
+        formData.append('title', this.editedItem.title);
+        formData.append('body', this.editedItem.body);
+        formData.append('status', this.editedItem.status);
+        formData.append('tags', this.editedItem.tags);
+        console.log(...formData);
         if (this.editedIndex > -1) {
-          Object.assign(this.pages[this.editedIndex], this.editedItem);
+          formData.append('_method', 'PUT');
+          let path = 'content/page/';
+          Crud.update(formData, this.$axios, path, this.editedItem.id);
+          this.close();
+          let self = this;
+          setTimeout(() => {
+            self.$store.dispatch('Content/page/getAllPages');
+          }, 2000);
         } else {
-          this.pages.push(this.editedItem);
+          let path = 'content/page/';
+          Crud.store(formData, this.$axios, path);
+          this.close();
+          let self = this;
+          setTimeout(() => {
+            self.$store.dispatch('Content/page/getAllPages');
+          }, 2000);
         }
         this.close();
       },

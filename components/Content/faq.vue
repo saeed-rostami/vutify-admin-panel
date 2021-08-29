@@ -128,7 +128,8 @@
 
 
     <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize"> Reset</v-btn>
+      <h1 class="font-weight-bold">هیچ محتوایی وجود ندارد</h1>
+
     </template>
 
 
@@ -204,11 +205,6 @@
       },
     }),
 
-    computed: {
-      statusLabel() {
-        return this.editedItem.status_text ? this.editedItem.status_text : 'وضعیت';
-      },
-    },
 
     methods: {
 

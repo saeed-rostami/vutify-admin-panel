@@ -272,11 +272,6 @@
 
     computed: {
       ...mapState('Content/category', ['imgURL']),
-
-
-      statusLabel() {
-        return this.editedItem.status_text ? this.editedItem.status_text : 'وضعیت';
-      },
     },
 
 

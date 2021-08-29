@@ -207,10 +207,6 @@
       parentsLabel() {
         return this.editedItem.parent_text ? this.editedItem.parent_text : ' منو والد';
       },
-
-      statusLabel() {
-        return this.editedItem.status_text ? this.editedItem.status_text : 'وضعیت';
-      },
     },
 
 
