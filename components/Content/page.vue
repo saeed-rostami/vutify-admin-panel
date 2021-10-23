@@ -42,17 +42,21 @@
                     sm="6"
                     md="4"
                   >
-                    <v-select
+                    <v-switch
                       v-model="editedItem.status"
-                      v-bind:label="statusLabel"
-                      :error-messages="statusErrors"
-                      required
-                      @change="$v.editedItem.status.$touch()"
-                      @blur="$v.editedItem.status.$touch"
-                      v-bind:items="statusOptions"
-                      v-model:trim="$v.editedItem.status.$model"
-                    >
-                    </v-select>
+                      label="وضعیت"
+                    ></v-switch>
+                    <!--<v-select-->
+                      <!--v-model="editedItem.status"-->
+                      <!--v-bind:label="statusLabel"-->
+                      <!--:error-messages="statusErrors"-->
+                      <!--required-->
+                      <!--@change="$v.editedItem.status.$touch()"-->
+                      <!--@blur="$v.editedItem.status.$touch"-->
+                      <!--v-bind:items="statusOptions"-->
+                      <!--v-model:trim="$v.editedItem.status.$model"-->
+                    <!--&gt;-->
+                    <!--</v-select>-->
                   </v-col>
                   <v-col cols="12" sm="12" md="12">
                     <label>پاسخ</label>
@@ -91,8 +95,8 @@
               >
                 پاک کردن خطاها
               </v-btn>
-              <v-btn color="blue darken-1" text @click="close"> لغو</v-btn>
-              <v-btn color="blue darken-1" text @click="submitForm"> ایجاد</v-btn>
+              <v-btn color="success" text @click="close"> لغو</v-btn>
+              <v-btn color="success" text @click="submitForm"> ایجاد</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -153,7 +157,7 @@
     validations: {
       editedItem: {
         title: {required},
-        status: {required},
+        // status: {required},
       }
     },
     components: {
@@ -186,7 +190,7 @@
       editedItem: {
         title: "",
         body: "",
-        status: "",
+        status: false,
         status_text: "",
         tags: [],
 

@@ -71,17 +71,21 @@
                       sm="6"
                       md="4"
                     >
-                      <v-select
+                      <v-switch
                         v-model="editedItem.status"
-                        v-bind:label="statusLabel"
-                        :error-messages="statusErrors"
-                        required
-                        @change="$v.editedItem.status.$touch()"
-                        @blur="$v.editedItem.status.$touch"
-                        v-bind:items="statusOptions"
-                        v-model:trim="$v.editedItem.status.$model"
-                      >
-                      </v-select>
+                        label="وضعیت"
+                      ></v-switch>
+                      <!--<v-select-->
+                        <!--v-model="editedItem.status"-->
+                        <!--v-bind:label="statusLabel"-->
+                        <!--:error-messages="statusErrors"-->
+                        <!--required-->
+                        <!--@change="$v.editedItem.status.$touch()"-->
+                        <!--@blur="$v.editedItem.status.$touch"-->
+                        <!--v-bind:items="statusOptions"-->
+                        <!--v-model:trim="$v.editedItem.status.$model"-->
+                      <!--&gt;-->
+                      <!--</v-select>-->
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
@@ -233,7 +237,7 @@
       editedItem: {
         name: {required},
         description: {required},
-        status: {required},
+        // status: {required},
         image: {required},
       }
     },
@@ -254,7 +258,7 @@
       editedItem: {
         name: '',
         description: '',
-        status: '',
+        status: false,
         status_text: '',
         image: [],
         tags: [],
@@ -310,7 +314,6 @@
         formData.append('description', this.editedItem.description);
         formData.append('status', this.editedItem.status);
         formData.append('tags', this.editedItem.tags);
-
         if (this.editedIndex > -1) {
           formData.append('_method', 'PUT');
           let path = 'content/category/';

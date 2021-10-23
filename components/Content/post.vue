@@ -106,17 +106,21 @@
                       sm="6"
                       md="4"
                     >
-                      <v-select
+                      <v-switch
                         v-model="editedItem.status"
-                        v-bind:label="statusLabel"
-                        :error-messages="statusErrors"
-                        required
-                        @change="$v.editedItem.status.$touch()"
-                        @blur="$v.editedItem.status.$touch"
-                        v-bind:items="statusOptions"
-                        v-model:trim="$v.editedItem.status.$model"
-                      >
-                      </v-select>
+                        label="وضعیت"
+                      ></v-switch>
+                      <!--<v-select-->
+                        <!--v-model="editedItem.status"-->
+                        <!--v-bind:label="statusLabel"-->
+                        <!--:error-messages="statusErrors"-->
+                        <!--required-->
+                        <!--@change="$v.editedItem.status.$touch()"-->
+                        <!--@blur="$v.editedItem.status.$touch"-->
+                        <!--v-bind:items="statusOptions"-->
+                        <!--v-model:trim="$v.editedItem.status.$model"-->
+                      <!--&gt;-->
+                      <!--</v-select>-->
                     </v-col>
 
                     <v-col
@@ -124,17 +128,21 @@
                       sm="6"
                       md="4"
                     >
-                      <v-select
+                      <v-switch
                         v-model="editedItem.commentable"
-                        v-bind:label="commentableLabel"
-                        :error-messages="commentableErrors"
-                        required
-                        @change="$v.editedItem.commentable.$touch()"
-                        @blur="$v.editedItem.commentable.$touch"
-                        v-bind:items="commentableOptions"
-                        v-model:trim="$v.editedItem.commentable.$model"
-                      >
-                      </v-select>
+                        label="وضعیت ارسال دیدگاه"
+                      ></v-switch>
+                      <!--<v-select-->
+                        <!--v-model="editedItem.commentable"-->
+                        <!--v-bind:label="commentableLabel"-->
+                        <!--:error-messages="commentableErrors"-->
+                        <!--required-->
+                        <!--@change="$v.editedItem.commentable.$touch()"-->
+                        <!--@blur="$v.editedItem.commentable.$touch"-->
+                        <!--v-bind:items="commentableOptions"-->
+                        <!--v-model:trim="$v.editedItem.commentable.$model"-->
+                      <!--&gt;-->
+                      <!--</v-select>-->
                     </v-col>
 
                     <v-col cols="12" sm="6" md="4">
@@ -207,14 +215,14 @@
                   پاک کردن خطاها
                 </v-btn>
                 <v-btn
-                  color="blue darken-1"
+                  color="success"
                   text
                   @click="close"
                 >
                   لغو
                 </v-btn>
                 <v-btn
-                  color="blue darken-1"
+                  color="success"
                   text
                   @click="submitForm"
                 >
@@ -278,8 +286,8 @@
         title: {required},
         category_id: {required},
         image: {required},
-        status: {required},
-        commentable: {required},
+        // status: {required},
+        // commentable: {required},
         body: {required},
         summary: {required},
       }
@@ -311,8 +319,6 @@
         language: 'fa',
       },
       publishedDatePicker: false,
-      commentableOptions: ['فعال',
-        'غیر فعال'],
       dialog: false,
       dialogDelete: false,
       headers: [
@@ -333,11 +339,11 @@
         body: '',
         published: '',
         published_text: '',
-        status: '',
+        status: false,
         status_text: '',
         category_text: '',
         commentable_text: '',
-        commentable: '',
+        commentable: false,
         summary: '',
         tags: [],
 
@@ -372,9 +378,9 @@
         return this.editedItem.category_text ? this.editedItem.category_text : 'دسته بندی';
       },
 
-      commentableLabel() {
-        return this.editedItem.commentable_text ? this.editedItem.commentable_text : 'وضعیت ارسال دیدگاه';
-      },
+      // commentableLabel() {
+      //   return this.editedItem.commentable_text ? this.editedItem.commentable_text : 'وضعیت ارسال دیدگاه';
+      // },
     },
 
     methods: {
