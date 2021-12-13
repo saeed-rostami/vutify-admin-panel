@@ -10,7 +10,7 @@
       <template v-slot:item.image="{item}">
         <v-avatar
         >
-          <img :src="imgURL+item.image" alt="alt">
+          <img :src="imgURL+item.image.indexArray.small" alt="alt">
         </v-avatar>
       </template>
       <template v-slot:top>
@@ -76,14 +76,14 @@
                         label="وضعیت"
                       ></v-switch>
                       <!--<v-select-->
-                        <!--v-model="editedItem.status"-->
-                        <!--v-bind:label="statusLabel"-->
-                        <!--:error-messages="statusErrors"-->
-                        <!--required-->
-                        <!--@change="$v.editedItem.status.$touch()"-->
-                        <!--@blur="$v.editedItem.status.$touch"-->
-                        <!--v-bind:items="statusOptions"-->
-                        <!--v-model:trim="$v.editedItem.status.$model"-->
+                      <!--v-model="editedItem.status"-->
+                      <!--v-bind:label="statusLabel"-->
+                      <!--:error-messages="statusErrors"-->
+                      <!--required-->
+                      <!--@change="$v.editedItem.status.$touch()"-->
+                      <!--@blur="$v.editedItem.status.$touch"-->
+                      <!--v-bind:items="statusOptions"-->
+                      <!--v-model:trim="$v.editedItem.status.$model"-->
                       <!--&gt;-->
                       <!--</v-select>-->
                     </v-col>
@@ -219,7 +219,7 @@
   import Base from "@/mixins/Base";
   import ValidationErrors from "@/mixins/ValidationErrors";
   import Crud from "@/classes/Crud";
-  import { mapState} from 'vuex'
+  import {mapState} from 'vuex'
 
 
   export default {
@@ -274,10 +274,10 @@
       },
     }),
 
+
     computed: {
       ...mapState('Content/category', ['imgURL']),
     },
-
 
     methods: {
       selectedImage() {

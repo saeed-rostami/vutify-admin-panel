@@ -18,13 +18,14 @@
       </div>
     </v-flex>
 
-    <index/>
-
+    <Loading v-if="$fetchState.pending"/>
+    <index v-else v-bind:comments="GET_COMMENTS"/>
   </section>
 </template>
 
 <script>
   import index from '@/components/Content/comment';
+  import {mapGetters} from "vuex";
 
   export default {
     name: "comment",
@@ -46,10 +47,17 @@
     }),
 
 
-    created() {
-      console.log('send api');
-    }
-    ,
+    async fetch() {
+      try {
+        await this.$store.dispatch('Content/comment/getAllComments');
+      } catch (e) {
+        console.log(e)
+      }
+    },
+
+    computed: {
+      ...mapGetters('Content/comment', ['GET_COMMENTS']),
+    },
   }
   ;
 </script>

@@ -20,21 +20,21 @@
 
         </v-dialog>
         <!--<v-dialog v-model="dialogDelete" max-width="500px">-->
-          <!--<v-card>-->
-            <!--<v-card-title class="text-h5"-->
-            <!--&gt;آیا از حذف این آیتم اطمینان دارید؟-->
-            <!--</v-card-title-->
-            <!--&gt;-->
-            <!--<v-card-actions>-->
-              <!--<v-spacer></v-spacer>-->
-              <!--<v-btn color="blue darken-1" text @click="closeDelete">لغو</v-btn>-->
-              <!--<v-btn color="blue darken-1" text @click="deleteItemConfirm"-->
-              <!--&gt;بله-->
-              <!--</v-btn-->
-              <!--&gt;-->
-              <!--<v-spacer></v-spacer>-->
-            <!--</v-card-actions>-->
-          <!--</v-card>-->
+        <!--<v-card>-->
+        <!--<v-card-title class="text-h5"-->
+        <!--&gt;آیا از حذف این آیتم اطمینان دارید؟-->
+        <!--</v-card-title-->
+        <!--&gt;-->
+        <!--<v-card-actions>-->
+        <!--<v-spacer></v-spacer>-->
+        <!--<v-btn color="blue darken-1" text @click="closeDelete">لغو</v-btn>-->
+        <!--<v-btn color="blue darken-1" text @click="deleteItemConfirm"-->
+        <!--&gt;بله-->
+        <!--</v-btn-->
+        <!--&gt;-->
+        <!--<v-spacer></v-spacer>-->
+        <!--</v-card-actions>-->
+        <!--</v-card>-->
         <!--</v-dialog>-->
       </v-toolbar>
     </template>
@@ -47,6 +47,7 @@
       />
 
       <ActionIcon
+        v-if="item.approved == 0"
         v-bind:icon="`mdi-check-outline`"
         v-bind:tooltip="`تایید`"
         v-bind:item="item"
@@ -55,53 +56,66 @@
 
 
       <ActionIcon
+        v-else
         v-bind:icon="` mdi-close`"
         v-bind:tooltip="`عدم تایید`"
         v-bind:item="item"
-        v-on:click="rejectComment(item)"
+        v-on:click="confirmComment(item)"
       />
-
 
     </template>
 
     <template v-slot:no-data>
-      <v-btn color="primary" @click="initialize"> Reset</v-btn>
+      <!--<v-btn color="primary" @click="initialize"> Reset</v-btn>-->
     </template>
   </v-data-table>
 </template>
 
 <script>
   import ActionIcon from "../CustomComponent/ActionIcon";
+  import Crud from "../../classes/Crud";
 
   export default {
     components: {ActionIcon},
+
+    props: {
+      comments: {
+        type: Array,
+        required: false
+      }
+    },
     data: () => ({
       dialog: false,
       dialogDelete: false,
       headers: [
         {text: "#", value: "id"},
-        {text: "شناسه کاربر", value: "user_id"},
-        {text: "نام کاربر", value: "user_name"},
-        {text: "شناسه کالا", value: "product_id"},
-        {text: "نام کالا", value: "product_name"},
-        {text: "وضعیت", value: "status"},
+        {text: "توسط", value: "user_name"},
+        {text: "متن نظر", value: "body"},
+        {text: "پست مربوط", value: "commentable"},
+        {text: "وضعیت تایید", value: "approved_text"},
+        {text: "وضعیت", value: "status_text"},
         {text: "تنظیمات", value: "actions", sortable: false},
       ],
-      comments: [],
       editedIndex: -1,
       editedItem: {
         user_id: "",
         user_name: "",
-        product_id: "",
-        product_name: "",
+        body: "",
+        approved_text: "",
         status: "",
+        status_text: "",
+        approved: "",
       },
+
       defaultItem: {
         user_id: "",
         user_name: "",
-        product_id: "",
-        product_name: "",
+        body: "",
+        approved_text: "",
         status: "",
+        status_text: "",
+        approved: "",
+
       },
     }),
 
@@ -120,26 +134,26 @@
       },
     },
 
-    created() {
-      this.initialize();
-    },
 
     methods: {
-      initialize() {
-        this.comments = [
-          {
-            id: "1",
-            user_id: "65",
-            user_name: "saeed",
-            product_id: "200",
-            product_name: "Iphone",
-            status: "confirmed",
+      confirmComment(item) {
+        let path = 'content/comment/';
+        Crud.confirmation(this.$axios, path, item.id,);
+        let self = this;
 
-          },
-
-
-        ];
+        setTimeout(() => {
+          self.$store.dispatch('Content/comment/getAllComments');
+        }, 2000);
       },
+
+      showComment(item) {
+        console.log(item.id);
+        // TODO GO TO SINGLE COMMENT
+        // this.$router.push({
+        //   path: 'admin/content/comment/' + item.id
+        // })
+      },
+
 
       editItem(item) {
         this.editedIndex = this.comments.indexOf(item);

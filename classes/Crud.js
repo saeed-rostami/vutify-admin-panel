@@ -96,6 +96,33 @@ class Crud {
     });
 
   }
+
+//  COMMENT CONFIRMATION
+  static confirmation(axios, path, id) {
+    Notiflix.Loading.circle();
+    axios.$put(path + id)
+      .then((response => {
+        Notiflix.Loading.remove();
+        console.log(response);
+        if (response.status === 204) {
+          Notiflix.Notify.success(
+            "   عملیات موفقیت آمیز",
+            {
+              position: 'right-bottom',
+            }
+          );
+        }
+      })).catch((error) => {
+      Notiflix.Loading.remove();
+      Notiflix.Notify.failure(
+        "   عملیات نا موفق",
+        {
+          position: 'right-bottom',
+        }
+      );
+    });
+
+  }
 }
 
 export default Crud;
